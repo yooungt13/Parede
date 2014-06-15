@@ -53,6 +53,13 @@ a:hover {
 html, img {
 	border: 0;
 }
+
+/* Font */
+
+.fg9 {
+	color: #999;
+}
+
 /* Header */
 
 header {
@@ -251,8 +258,47 @@ ul.class_list .arrow {
 	margin: 0 auto;
 }
 
+.op_box {
+	width: 1075px;
+	padding: 20px 0;
+	overflow: hidden;
+}
+
+.op_box .item {
+	float: left;
+	position: relative;
+}
+
+.op_box .item .menu {
+	position: relative;
+	float: left;
+	height: 28px;
+	line-height: 28px;
+	padding: 0 9px;
+	margin: 3px 0;
+	outline: none;
+	color: #333;
+	cursor: pointer;
+}
+
+.op_box .item .button {
+	margin-right: 10px;
+	background: #1c9fe5;
+	border: 1px solid #11a0ee;
+	color: #fff;
+	border-radius: 3px;
+}
+
+.op_box .item .button:hover {
+	box-shadow: 0 0 10px rgba(0,0,0,0.2);
+	cursor: pointer;
+}
+
+.op_box .item input {
+	margin: 8px 50px; 
+}
+
 .albums {
-	margin: 10px 0 10px 0;
 	overflow: hidden;
 }
 
@@ -269,16 +315,39 @@ ul.class_list .arrow {
 	position: relative;
 }
 
+.album:hover {
+	box-shadow: 0 0 5px rgba(0,0,0,0.2);
+	background-color: #fefefe;
+}
+
 .album .album_cover {
 	width: 160px;
 	line-height: 20px;
 	margin: 0 auto;
 	text-align: left;
+	cursor: pointer;
 }
 
 .album .album_cover img{
 	width: 160px;
 	height: 160px;
+	margin-bottom: 13px;
+}
+
+.album .title, .album .dscrip {
+	width: 160px;
+	margin: 0 auto;
+	text-align: left; 
+}
+
+.album .dscrip .left {
+	float: left;
+	overflow: hidden;
+}
+
+.album .dscrip .right {
+	float: right;
+	overflow: hidden;
 }
 
 /* Footer */
