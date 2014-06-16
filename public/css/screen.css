@@ -350,6 +350,13 @@ ul.class_list .arrow {
 	overflow: hidden;
 }
 
+.col {
+	float: left;
+	width: 213px;
+	border: 1px solid #ccc;
+	min-height: 400px;
+}
+
 /* Footer */
 
 footer {
