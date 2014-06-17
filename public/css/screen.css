@@ -352,9 +352,42 @@ ul.class_list .arrow {
 
 .col {
 	float: left;
+	width: 215px;
+	min-height: 400px;
+}
+
+.col .wrap {
+	position: relative;
 	width: 213px;
 	border: 1px solid #ccc;
-	min-height: 400px;
+	overflow: hidden;
+}
+
+.col .wrap img {
+	position: relative;
+	margin: 6px 5px 1px;
+	top: 0px;
+	z-index: 10;
+}
+
+.col .wrap img:hover {
+	position: relative;
+	top: -20px;
+	transition: top 0.5s ease;
+	-webkit-transition: top 0.5s ease;
+}
+
+.col .wrap span {
+	position: absolute;
+	color: #999;
+	left: 7px;
+	bottom: 4px;
+	z-index: 9;
+}
+
+.col .wrap:hover {
+	box-shadow: 0 0 5px rgba(0,0,0,0.5);
+	cursor: pointer;
 }
 
 /* Footer */
