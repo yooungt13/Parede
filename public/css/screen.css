@@ -15,18 +15,14 @@ html, body {
 	height: 100%; 
 }
 
-body {
-	font: 13.34px helvetica, arial, clean, sans-serif;
-	text-align: center;
-}
-
 h1, h2, h3, h4, h5, h6 {
 	font-size: 100%;
 }
 
 body, button, input, select, textarea { 
-	font:12px/1.5 arial,\5b8b\4f53;
+	font:12px/1.5 Helvetica, arial, freesans, clean, sans-serif;
 	color:#333;
+	text-align: center;
 }
 
 p {
@@ -63,6 +59,7 @@ html, img {
 .fb14 {
 	color: #000;
 	font-size: 14px;
+	font-weight: bold;
 }
 
 /* Header */
