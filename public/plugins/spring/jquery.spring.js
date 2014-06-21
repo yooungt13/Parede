@@ -10,8 +10,7 @@ $(function(){
 		$(window).scroll(function() {
 			var docTop = $(document).scrollTop(),
 				contentHeight = $('#albums').height();
-				//contentTop = $('#albums').top();
-			if (docTop + contentHeight + 500 >= winHeight) {
+			if (docTop + winHeight >= contentHeight) {
 				loadImg();
 			}
 		});
