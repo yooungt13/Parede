@@ -3,10 +3,17 @@ var express = require('express'),
 
 var model = require('../models/Model.js');
 
-/* GET home page. */
+// GET login page. 
 router.get('/', function(req, res) {
 	res.render('index', {
-		title: 'Express'
+		title: 'Welcome to Parede.'
+	});
+});
+
+// GET home page. 
+router.get('/home', function(req, res) {
+	res.render('home', {
+		title: 'Welcome, Tian'
 	});
 });
 
@@ -14,7 +21,7 @@ router.get('/login', function(req, res) {
 	console.log("Login've called");
 
 	req.body.loginid = 'titan';
-	req.body.password = '1234';
+	req.body.password = '123';
 
 	model.findByLoginId(req.body.loginid, function(err, obj) {
 		console.log('LoginInfo: ' + obj);
@@ -25,15 +32,15 @@ router.get('/login', function(req, res) {
 				// req.session.user = obj;
 				// req.session.error = '';
 				// resp.redirect('/home');
-				res.redirect('/');
+				res.redirect('/home');
 			} else {
 				console.log('You\'ve a wrong Password.');
-				res.redirect('/500');
+				res.redirect('/');
 			}
 		} else {
 			console.log('There\'s no account.');
 			//req.session.error = '用户名或密码不正确';
-			res.redirect('/500');
+			res.redirect('/');
 		}
 	});
 });
@@ -53,10 +60,10 @@ router.get('/doRegist', function(req, resp) {
 	model.save(newer, function(err) {
 		if (err) {
 			console.log('Regist false.');
-			resp.redirect('/500');
+			resp.redirect('/');
 		} else {
 			console.log('Regist success.');
-			resp.redirect('/');
+			resp.redirect('/home');
 		}
 	});
 
@@ -76,6 +83,10 @@ router.get('/doRegist', function(req, resp) {
 	// });
 });
 
+router.get('logout', function(req, resp) {
+	//req.session.user = null;
+	resp.redirect('/');
+});
 
 module.exports = router;
 
@@ -131,12 +142,3 @@ module.exports = router;
 // 	});
 
 // }
-
-// exports.logout = function(req, resp) {
-// 	req.session.user = null;
-// 	resp.redirect('/');
-// };
-
-// exports.home = function(req, resp) {
-// 	resp.render('home');
-// };

@@ -1,5 +1,28 @@
-extends includes/layout
-
-block content
-  h1= title
-  p Welcome to #{title}
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/css/index.css')
+  section
+    .main
+      .left
+      .right
+        .wrap
+          .title Parede
+          form.form
+            .input
+              input(type='text', placeholder='Email')
+              input(type='text', placeholder='Password')
+            .persistency
+              .checkbox.checked  
+              span Keep Count
+            a.submit(href='home') Login
+          .signup
+            span Maybe
+            a(href='') Create a New Count
+          .tag Login
+  footer
+    p 所有内容仅限于学习参考，切勿商用
+    p
+      | Copyright © 2014
+      a(href='https://github.com/yooungt13') 有田十三

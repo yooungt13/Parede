@@ -1,0 +1,41 @@
+extends layouts/layout
+
+block content
+  section.info
+    .info_wrap
+      .head_info
+        img.user_head(src='./img/t.jpg', alt='pic')
+        .user_info
+          .user_title Tian
+          .user_dscrip 牛逼的相册不解释
+      ul.class_list
+        li.item.first
+          a.curr.cb(href='') Content
+          span.arrow
+        li.item
+          a.tb(href='') Time
+        li.item
+          a.lb(href='') Location
+      a(href='')
+        img.extra(src='./img/logo.png', alt='logo')
+  section.main
+    article
+      .op_box
+        ul
+          li.item
+            a.menu.button(href='') Upload
+          li.item
+            a.menu(href='') Create
+          li.item
+            input(type='search')
+      .albums
+        .album
+          .album_cover
+            a(href='album.html')
+              img(src='./img/cover.gif', alt='album_cover')
+          .title
+            span Album
+            span.fg9 (1)
+          .dscrip
+            .left.fg9 Created in 2012/10/10
+            span.right
