@@ -1,22 +1,24 @@
 doctype html
-html
+html(ng-app='Parede')
   head
     title= title
     link(rel='stylesheet', href='/css/index.css')
-  section
+    script(type='text/javascript', src='/js/basics/angular.min.js')
+    script(type='text/javascript', src='/js/app.js')
+    script(type='text/javascript', src='/js/controllers/LoginController.js')
+  section(ng-controller='LoginController')
     .main
       .left
       .right
         .wrap
           .title Parede
-          form.form
+          form.form(name='loginForm')
             .input
-              input(type='text', placeholder='Email')
-              input(type='text', placeholder='Password')
+              input(type='email', name='email', required, placeholder='Email', ng-model='login.email')
+              input(type='password', name='password', required, placeholder='Password', ng-model='login.pwd')
             .persistency
-              .checkbox.checked  
-              span Keep Count
-            a.submit(href='home') Login
+              p(ng-show='loginForm.email.$invalid') Please input email/pwd
+            button(ng-click='loginSubmit(login)') Login
           .signup
             span Maybe
             a(href='') Create a New Count

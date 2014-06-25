@@ -1,7 +1,7 @@
 var express = require('express'),
 	router = express.Router();
 
-var model = require('../models/Model.js');
+var user = require('../models/User.js');
 
 // GET login page. 
 router.get('/', function(req, res) {
@@ -17,13 +17,13 @@ router.get('/home', function(req, res) {
 	});
 });
 
-router.get('/login', function(req, res) {
+router.post('/login', function(req, res) {
 	console.log("Login've called");
 
 	req.body.loginid = 'titan';
 	req.body.password = '123';
 
-	model.findByLoginId(req.body.loginid, function(err, obj) {
+	user.findByLoginId(req.body.loginid, function(err, obj) {
 		console.log('LoginInfo: ' + obj);
 		if (obj) {
 			console.log('Input password: ' + req.body.password);
@@ -45,7 +45,7 @@ router.get('/login', function(req, res) {
 	});
 });
 
-router.get('/doRegist', function(req, resp) {
+router.get('/doRegist', function(req, res) {
 	console.log("Regist've called");
 	var newer = {
 		_id: 'titan',
@@ -57,26 +57,26 @@ router.get('/doRegist', function(req, resp) {
 			head: 'man.png'
 		}
 	};
-	model.save(newer, function(err) {
+	user.save(newer, function(err) {
 		if (err) {
 			console.log('Regist false.');
-			resp.redirect('/');
+			res.redirect('/');
 		} else {
 			console.log('Regist success.');
-			resp.redirect('/home');
+			res.redirect('/home');
 		}
 	});
 
 	// var login = Login.findByLoginId(req.body.loginid, function(err, obj) {
 	// 	if (obj) {
 	// 		console.log('ID is existed.');
-	// 		resp.redirect('/');
+	// 		res.redirect('/');
 	// 	} else {
 	// 		Login.save(login, function(err) {
 	// 			if (err) {
 	// 				console.log('Regist false.');
 	// 			} else {
-	// 				resp.redirect('/');
+	// 				res.redirect('/');
 	// 			}
 	// 		});
 	// 	}
