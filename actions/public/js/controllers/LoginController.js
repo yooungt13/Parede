@@ -16,3 +16,13 @@ app.controller("LoginController", function($scope, $http) {
 		}
 	};
 });
+
+app.config(['$routeProvider', function ($routeProvider) {
+    $routeProvider.when('/students', {
+        templateUrl: 'views/students.html',
+        controller: 'studentsController'
+    }).otherwise(
+        {
+            templateUrl: 'views/greeting.html'
+        })
+}]);

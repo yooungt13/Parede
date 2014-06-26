@@ -31,7 +31,6 @@ router.post('/login', function(req, res) {
 				console.log('Validate success');
 				// req.session.user = obj;
 				// req.session.error = '';
-				// resp.redirect('/home');
 				res.redirect('/home');
 			} else {
 				console.log('You\'ve a wrong Password.');
