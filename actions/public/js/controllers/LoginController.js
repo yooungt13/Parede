@@ -2,27 +2,21 @@ app.controller("LoginController", function($scope, $http) {
 	console.log("Controller is called.")
 
 	$scope.loginSubmit = function(login) {
-		console.log("Login info: " + login.email + "/" + login.pwd);
+		console.log("Login info: " + login.email + "/" + login.password);
 		if (login != null) {
-			
-			//console.log("Data here.");
-			$http.post("login",login)
-				.success(function(data, status, headers, config){
-					alert("Login Success");
+
+			$http.post("login", login)
+				.success(function(data, status, headers, config) {
+					alert(data.description);
+
+					if(data.code == 0){
+						window.location.href="home"; 
+					}
 				})
-				.error(function(data, status, headers, config){
+				.error(function(data, status, headers, config) {
 					alert("Login Failed");
 				});
+
 		}
 	};
 });
-
-app.config(['$routeProvider', function ($routeProvider) {
-    $routeProvider.when('/students', {
-        templateUrl: 'views/students.html',
-        controller: 'studentsController'
-    }).otherwise(
-        {
-            templateUrl: 'views/greeting.html'
-        })
-}]);

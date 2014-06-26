@@ -1,7 +1,8 @@
 var express = require('express'),
 	router = express.Router();
 
-var user = require('../models/User.js');
+var user = require('../models/User.js'),
+	code = require('../models/Code.js');
 
 // GET login page. 
 router.get('/', function(req, res) {
@@ -19,27 +20,22 @@ router.get('/home', function(req, res) {
 
 router.post('/login', function(req, res) {
 	console.log("Login've called");
+	console.log('Login Info: ' + req.body.email + "/" + req.body.password);
 
-	req.body.loginid = 'titan';
-	req.body.password = '123';
+	var loginCode = code.LoginCode;
 
-	user.findByLoginId(req.body.loginid, function(err, obj) {
-		console.log('LoginInfo: ' + obj);
+	user.findByLoginId(req.body.email, function(err, obj) {
 		if (obj) {
-			console.log('Input password: ' + req.body.password);
-			if (req.body.loginid === obj._id && req.body.password === obj.password) {
-				console.log('Validate success');
-				// req.session.user = obj;
-				// req.session.error = '';
-				res.redirect('/home');
+			if (req.body.email === obj._id && req.body.password === obj.password) {
+				console.log(loginCode[0].description);
+				res.json(loginCode[0]);
 			} else {
-				console.log('You\'ve a wrong Password.');
-				res.redirect('/');
+				console.log(loginCode[1].description);
+				res.json(loginCode[1]);
 			}
 		} else {
-			console.log('There\'s no account.');
-			//req.session.error = '用户名或密码不正确';
-			res.redirect('/');
+			console.log(loginCode[2].description);
+			res.json(loginCode[2]);
 		}
 	});
 });
@@ -82,7 +78,7 @@ router.get('/doRegist', function(req, res) {
 	// });
 });
 
-router.get('logout', function(req, resp) {
+router.get('/logout', function(req, resp) {
 	//req.session.user = null;
 	resp.redirect('/');
 });
