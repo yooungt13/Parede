@@ -6,7 +6,7 @@ app.controller("AlbumController", function($scope, $http) {
 		$http.post("upload")
 			.success(function(data, status, headers, config) {
 				console.log(data);
-				$http.post("distribute")
+				$http.post("distribute",data)
 					.success(function(data, status, headers, config) {
 						console.log(data);
 					})
