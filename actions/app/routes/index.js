@@ -1,8 +1,9 @@
 var express = require('express'),
 	router = express.Router();
 
-var user = require('../models/User.js'),
-	code = require('../models/Code.js');
+var fs = require('fs'),
+	path = require('path'),
+	multipart = require('connect-multiparty');
 
 // GET login page. 
 router.get('/', function(req, res) {
@@ -18,122 +19,44 @@ router.get('/home', function(req, res) {
 	});
 });
 
-router.post('/login', function(req, res) {
-	console.log("Login've called");
-	console.log('Login Info: ' + req.body.email + "/" + req.body.password);
+router.post('/upload', multipart(), function(req, res) {
+	console.log('Upload\'ve been called.');
 
-	var loginCode = code.LoginCode;
+	// var filePath = req.files.image.path;
+	// var newPath = __dirname + "/" + path.basename(filePath);
 
-	user.findByLoginId(req.body.email, function(err, obj) {
-		if (obj) {
-			if (req.body.email === obj._id && req.body.password === obj.password) {
-				console.log(loginCode[0].description);
-				res.json(loginCode[0]);
-			} else {
-				console.log(loginCode[1].description);
-				res.json(loginCode[1]);
-			}
-		} else {
-			console.log(loginCode[2].description);
-			res.json(loginCode[2]);
-		}
-	});
-});
-
-router.get('/doRegist', function(req, res) {
-	console.log("Regist've called");
-	var newer = {
-		_id: 'titan',
-		password: '123',
-		info: {
-			tel: '18620667350',
-			email: 'xxoo@qq.com',
-			sex: true,
-			head: 'man.png'
-		}
-	};
-	user.save(newer, function(err) {
-		if (err) {
-			console.log('Regist false.');
-			res.redirect('/');
-		} else {
-			console.log('Regist success.');
-			res.redirect('/home');
-		}
-	});
-
-	// var login = Login.findByLoginId(req.body.loginid, function(err, obj) {
-	// 	if (obj) {
-	// 		console.log('ID is existed.');
-	// 		res.redirect('/');
-	// 	} else {
-	// 		Login.save(login, function(err) {
-	// 			if (err) {
-	// 				console.log('Regist false.');
-	// 			} else {
-	// 				res.redirect('/');
-	// 			}
-	// 		});
+	//把图片从临时文件夹复制到目的文件夹，当然最好删除临时文件
+	// fs.readFile(filePath, function(err, data) {
+	// 	if (err) {
+	// 		res.send(err);
+	// 		return;
 	// 	}
+
+	// 	fs.writeFile(newPath, data, function(err) {
+	// 		if (!err) {
+	// 			res.redirect('/home');
+	// 		} else {
+	// 			res.send(err);
+	// 		}
+	// 	});
 	// });
+
+	res.json([{
+			url: '../0.png',
+			tags: ['moutain', 'lake', 'women']
+		}, {
+			url: '../1.png',
+			tags: ['sunrise', 'outdoor', 'men']
+		},
+
+	]);
 });
 
-router.get('/logout', function(req, resp) {
-	//req.session.user = null;
-	resp.redirect('/');
+router.post('/distribute', function(req, res) {
+	console.log('Distribute\'ve been called');
+	console.log(req.body);
+
+	res.json('ok');
 });
 
 module.exports = router;
-
-
-
-// exports.index = function(req, resp) {
-// 	resp.render('login');
-// };
-
-// exports.login = function(req, resp) {
-// 	console.log("Login've called");
-
-// 	Login.findByLoginId(req.body.loginid, function(err, obj) {
-// 		console.log(obj);
-// 		if (obj) {
-// 			console.log(req.body.password);
-// 			if (req.body.loginid === obj._id && req.body.password === obj.password) {
-// 				console.log('validate success');
-// 				req.session.user = obj;
-// 				req.session.error = '';
-// 				resp.redirect('/home');
-// 			}
-// 		} else {
-// 			req.session.error = '用户名或密码不正确';
-// 			resp.redirect('/');
-// 		}
-// 	});
-// };
-
-// exports.regist = function(req, resp) {
-// 	resp.render('register');
-// }
-
-// exports.doRegist = function(req, resp) {
-// 	console.log("Regist've called");
-// 	// var login = {
-// 	// 	_id: 'titan',
-// 	// 	password: '123'
-// 	// };
-// 	var login = Login.findByLoginId(req.body.loginid, function(err, obj) {
-// 		if (obj) {
-// 			console.log('ID is existed.');
-// 			resp.redirect('/');
-// 		} else {
-// 			Login.save(login, function(err) {
-// 				if (err) {
-// 					console.log('Regist false.');
-// 				} else {
-// 					resp.redirect('/');
-// 				}
-// 			});
-// 		}
-// 	});
-
-// }

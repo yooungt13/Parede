@@ -21,13 +21,17 @@ block content
   section.main
     article
       .op_box
-        ul
+        ul(ng-controller='AlbumController')
           li.item
-            a.menu.button(href='') Upload
+            a.menu.button(href='', ng-click='imgSubmit();') Upload
           li.item
             a.menu(href='') Create
           li.item
             input(type='search')
+          li.item
+            form(method='post', action='/upload', enctype='multipart/form-data')
+              input(type='file', name='image')
+              input(type='submit', name='submit', value='Submit')
       .albums
         .album
           .album_cover

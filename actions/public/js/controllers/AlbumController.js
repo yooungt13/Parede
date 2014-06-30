@@ -8,16 +8,18 @@ app.controller("AlbumController", function($scope, $http) {
 				console.log(data);
 				$http.post("distribute")
 					.success(function(data, status, headers, config) {
-						console.log("Distribute success.");
+						console.log(data);
 					})
 					.error(function(data, status, headers, config) {
 						console.log("Distribute failed.");
 					});
+				console.log('resp finished.');
 			})
 			.error(function(data, status, headers, config) {
 				alert("Upload failed.");
 			});
 
+		console.log('submit finished.');
 		//}
 	};
 });
