@@ -3,7 +3,7 @@ app.controller("AlbumController", function($scope, $http) {
 
 	$scope.imgSubmit = function() {
 		//if (login != null) {
-		$http.post("upload")
+		$http.post("upload") // 图床url
 			.success(function(data, status, headers, config) {
 				console.log(data);
 				$http.post("distribute",data)

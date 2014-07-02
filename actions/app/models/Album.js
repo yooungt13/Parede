@@ -1,36 +1,42 @@
 var mongodb = require('./mongodb.js');
 var Schema = mongodb.mongoose.Schema;
 
-var UserSchema = new Schema({
+var AlbumSchema = new Schema({
 	_id: String,
-	password: String,
-	info: {
-		tel: String,
-		email: String,
-		sex: Boolean,
-		head: String
-	},
-	albums: []
+	userid: String,
+	photos: []
 });
 
-var User = mongodb.mongoose.model("User", UserSchema);
+var Album = mongodb.mongoose.model("Album", AlbumSchema);
 
-var ModelDAO = function() {};
+var AlbumlDAO = function() {};
 
-ModelDAO.prototype = {
+AlbumlDAO.prototype = {
 	save: function(obj, callback) {
-		var instance = new User(obj);
+		var instance = new Album(obj);
+		console.log(instance);
 		instance.save(function(err) {
 			callback(err);
 		});
 	},
-	findByLoginId: function(loginId, callback) {
-		User.findOne({
-			_id: loginId
+	findById: function(id, callback) {
+		Album.findOne({
+			_id: id
 		}, function(err, obj) {
 			callback(err, obj);
 		});
+	},
+	update: function(obj, callback) {
+		Album.update({
+			_id: obj._id
+		}, {
+			$set: {
+				photos: obj.photos
+			}
+		}, function(err) {
+			callback(err);
+		})
 	}
 };
 
-module.exports = new ModelDAO();
+module.exports = new AlbumlDAO();

@@ -5,6 +5,9 @@ var fs = require('fs'),
 	path = require('path'),
 	multipart = require('connect-multiparty');
 
+var albumDao = require('../models/Album.js'),
+	photoDao = require('../models/Photo.js');
+
 // GET login page. 
 router.get('/', function(req, res) {
 	res.render('index', {
@@ -54,7 +57,45 @@ router.post('/upload', multipart(), function(req, res) {
 
 router.post('/distribute', function(req, res) {
 	console.log('Distribute\'ve been called');
-	console.log(req.body);
+
+	var photos = req.body;
+	for (var i = 0, plen = photos.length; i < plen; i++) {
+		photos[i].userid = 1;
+
+		// 将图片信息存入数据库，并返回索引
+		(function(photo) {
+			photoDao.save(photo, function(err, photoid) {
+				if (err) throw err;
+				console.log("photoid: " + photoid);
+
+				var tags = photo.tags;
+				// 将图片插入相册
+				for (var j = 0, tlen = tags.length; j < tlen; j++) {
+					(function(tag) {
+						console.log(tag);
+						albumDao.findById(tag, function(err, album) {
+							if (!album) {
+								console.log(tag + " isn't exited.");
+								albumDao.save({
+									_id: tag,
+									userid: 1,
+									photos: [photoid]
+								}, function(err) {
+									if (err) throw err;
+								});
+							} else {
+								console.log(tag + " is exited.");
+								album.photos.push(photoid);
+								albumDao.update(album, function(err) {
+									if (err) throw err;
+								});
+							}
+						});
+					})(tags[j]);
+				};
+			});
+		})(photos[i]);
+	}
 
 	res.json('ok');
 });
