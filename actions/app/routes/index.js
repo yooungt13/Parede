@@ -44,6 +44,72 @@ router.post('/upload', multipart(), function(req, res) {
 	// 	});
 	// });
 
+
+	// var data = [{
+	// 	url: "./data/thumb/0.jpg",
+	// 	tags: [
+	// 		"ice",
+	// 		"people",
+	// 		"outdoor"
+	// 	]
+	// }, {
+	// 	url: "./data/thumb/1.jpg",
+	// 	tags: [
+	// 		"party",
+	// 		"people",
+	// 		"indoor"
+	// 	]
+	// }, {
+	// 	url: "./data/thumb/2.jpg",
+	// 	tags: [
+	// 		"bus",
+	// 		"outdoor"
+	// 	]
+	// }, {
+	// 	url: "./data/thumb/3.jpg",
+	// 	tags: [
+	// 		"sunset",
+	// 		"tree"
+	// 	]
+	// }, {
+	// 	url: "./data/thumb/4.jpg",
+	// 	tags: [
+	// 		"building"
+	// 	]
+	// }, {
+	// 	url: "./data/thumb/5.jpg",
+	// 	tags: [
+	// 		"people",
+	// 		"outdoor"
+	// 	]
+	// }, {
+	// 	url: "./data/thumb/6.jpg",
+	// 	tags: [
+	// 		"food",
+	// 		"people",
+	// 		"outdoor"
+	// 	]
+	// }, {
+	// 	url: "./data/thumb/7.jpg",
+	// 	tags: [
+	// 		"ice",
+	// 		"people",
+	// 		"outdoor"
+	// 	]
+	// }, {
+	// 	url: "./data/thumb/8.jpg",
+	// 	tags: [
+	// 		"people",
+	// 		"outdoor"
+	// 	]
+	// }, {
+	// 	url: "./data/thumb/9.jpg",
+	// 	tags: [
+	// 		"people",
+	// 		"outdoor"
+	// 	]
+	// }];
+	//res.json(data);
 	res.json([{
 			url: '../0.png',
 			tags: ['moutain', 'lake', 'women']
@@ -51,7 +117,6 @@ router.post('/upload', multipart(), function(req, res) {
 			url: '../1.png',
 			tags: ['sunrise', 'outdoor', 'men']
 		},
-
 	]);
 });
 
@@ -79,7 +144,8 @@ router.post('/distribute', function(req, res) {
 								albumDao.save({
 									_id: tag,
 									userid: 1,
-									photos: [photoid]
+									photos: [photoid],
+									time: new Date()
 								}, function(err) {
 									if (err) throw err;
 								});
@@ -97,7 +163,18 @@ router.post('/distribute', function(req, res) {
 		})(photos[i]);
 	}
 
-	res.json('ok');
+	res.json('Distribute success.');
+});
+
+router.get("/albums", function(req, res) {
+	albumDao.findAll(function(err, albums) {
+		if (err) throw err;
+		res.json(albums);
+	});
+});
+
+router.get("/album", function(req, res) {
+	console.log(req.body);
 });
 
 module.exports = router;

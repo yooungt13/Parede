@@ -19,9 +19,9 @@ block content
       a(href='')
         img.extra(src='./img/logo.png', alt='logo')
   section.main
-    article
+    article(ng-controller='AlbumController')
       .op_box
-        ul(ng-controller='AlbumController')
+        ul
           li.item
             a.menu.button(href='', ng-click='imgSubmit();') Upload
           li.item
@@ -33,13 +33,13 @@ block content
               input(type='file', name='image')
               input(type='submit', name='submit', value='Submit')
       .albums
-        .album
+        .album(ng-repeat="album in albums")
           .album_cover
             a(href='album.html')
-              img(src='./img/cover.gif', alt='album_cover')
+              img(src='{{ album.cover }}', alt='album_cover')
           .title
-            span Album
-            span.fg9 (1)
+            span {{ album._id }}
+            span.fg9 ({{ album.photos.length }})
           .dscrip
-            .left.fg9 Created in 2012/10/10
+            .left.fg9 Created in {{ album.time }}
             span.right

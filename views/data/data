@@ -1,0 +1,64 @@
+[{
+	url: "./data/thumb/0.jpg",
+	tags: [ 
+		"ice",
+		"people",
+		"outdoor"
+	]
+{
+	url: "./data/thumb/1.jpg",
+	tags: [ 
+		"party",
+		"people",
+		"indoor"
+	]
+},{
+	url: "./data/thumb/2.jpg",
+	tags: [ 
+		"bus",
+		"outdoor"
+	]
+},{
+	url: "./data/thumb/3.jpg",
+	tags: [ 
+		"sunset",
+		"tree"
+	]
+},{
+	url: "./data/thumb/4.jpg",
+	tags: [ 
+		"building"
+	]
+},{
+	url: "./data/thumb/5.jpg",
+	tags: [ 
+		"people",
+		"outdoor"
+	]
+},{
+	url: "./data/thumb/6.jpg",
+	tags: [ 
+		"food",
+		"people",
+		"outdoor"
+	]
+},{
+	url: "./data/thumb/7.jpg",
+	tags: [ 
+		"ice",
+		"people",
+		"outdoor"
+	]
+},{
+	url: "./data/thumb/8.jpg",
+	tags: [ 
+		"people",
+		"outdoor"
+	]
+},{
+	url: "./data/thumb/9.jpg",
+	tags: [ 
+		"people",
+		"outdoor"
+	]
+}]

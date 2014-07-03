@@ -4,6 +4,11 @@ var Schema = mongodb.mongoose.Schema;
 var AlbumSchema = new Schema({
 	_id: String,
 	userid: String,
+	time: Date,
+	cover: {
+		type: String,
+		default: "./img/cover.gif"
+	},
 	photos: []
 });
 
@@ -14,7 +19,6 @@ var AlbumlDAO = function() {};
 AlbumlDAO.prototype = {
 	save: function(obj, callback) {
 		var instance = new Album(obj);
-		console.log(instance);
 		instance.save(function(err) {
 			callback(err);
 		});
@@ -24,6 +28,11 @@ AlbumlDAO.prototype = {
 			_id: id
 		}, function(err, obj) {
 			callback(err, obj);
+		});
+	},
+	findAll: function(callback){
+		Album.find({}, function(err, docs){
+			callback(err, docs);
 		});
 	},
 	update: function(obj, callback) {

@@ -1,12 +1,14 @@
 app.controller("AlbumController", function($scope, $http) {
 	console.log("AlbumController is called.")
 
+	// upload submit
 	$scope.imgSubmit = function() {
 		//if (login != null) {
-		$http.post("upload") // 图床url
+		// 图床url ip:port/upload
+		$http.post("upload")
 			.success(function(data, status, headers, config) {
 				console.log(data);
-				$http.post("distribute",data)
+				$http.post("distribute", data)
 					.success(function(data, status, headers, config) {
 						console.log(data);
 					})
@@ -22,4 +24,15 @@ app.controller("AlbumController", function($scope, $http) {
 		console.log('submit finished.');
 		//}
 	};
+
+	$scope.albums = [];
+	$http.get("albums")
+		.success(function(data, status, headers, config) {
+			console.log("Albums get success.");
+			$scope.albums = data;
+		})
+		.error(function(data, status, headers, config) {
+			console.log("Albums get failed.");
+		});
+
 });
