@@ -44,7 +44,6 @@ router.post('/upload', multipart(), function(req, res) {
 	// 	});
 	// });
 
-
 	// var data = [{
 	// 	url: "./data/thumb/0.jpg",
 	// 	tags: [
@@ -134,13 +133,16 @@ router.post('/distribute', function(req, res) {
 				console.log("photoid: " + photoid);
 
 				var tags = photo.tags;
-				// 将图片插入相册
+				// 将图片插入相册 
+				// mean stack mongodb+express+angularjs+nodejs
+				// 建立一个缓冲区
 				for (var j = 0, tlen = tags.length; j < tlen; j++) {
 					(function(tag) {
 						console.log(tag);
 						albumDao.findById(tag, function(err, album) {
 							if (!album) {
 								console.log(tag + " isn't exited.");
+								// save
 								albumDao.save({
 									_id: tag,
 									userid: 1,
@@ -152,6 +154,7 @@ router.post('/distribute', function(req, res) {
 							} else {
 								console.log(tag + " is exited.");
 								album.photos.push(photoid);
+								// update
 								albumDao.update(album, function(err) {
 									if (err) throw err;
 								});
@@ -165,6 +168,7 @@ router.post('/distribute', function(req, res) {
 
 	res.json('Distribute success.');
 });
+
 
 router.get("/albums", function(req, res) {
 	albumDao.findAll(function(err, albums) {
