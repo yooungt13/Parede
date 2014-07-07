@@ -134,7 +134,6 @@ router.post('/distribute', function(req, res) {
 
 				var tags = photo.tags;
 				// 将图片插入相册 
-				// mean stack mongodb+express+angularjs+nodejs
 				// 建立一个缓冲区
 				for (var j = 0, tlen = tags.length; j < tlen; j++) {
 					(function(tag) {
