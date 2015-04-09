@@ -300,7 +300,28 @@ ul.class_list .arrow {
 }
 
 .op_box .item input {
-	margin: 8px 50px; 
+	margin: 8px 0 8px 50px; 
+}
+
+.search {
+	width: 100%;
+	min-height: 150px; 
+	overflow: hidden;
+	display: none;
+}
+
+.search img {
+	float: left;
+	padding: 10px 0 10px 0;
+}
+
+.search a {
+	float: left;
+	margin-right: 10px;
+	background: #1c9fe5;
+	border: 1px solid #11a0ee;
+	color: #fff;
+	border-radius: 3px;
 }
 
 .albums {

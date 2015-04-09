@@ -4,8 +4,11 @@ var Schema = mongodb.mongoose.Schema;
 var PhotoSchema = new Schema({
 	_id: Number,
 	userid: String,
-	url: String,
-	tags: []
+	tUrl: String,
+	oUrl: String,
+	tags: [],
+	descrip: String,
+	date: Date
 });
 
 var CounterSchema = new Schema({
@@ -38,6 +41,27 @@ PhotoDAO.prototype = {
 			seq: id
 		}, function(err, obj) {
 			callback(err, obj);
+		});
+	},
+	findByTag: function(str, callback) {
+		var tags = str.split(' ');
+		console.log(tags);
+		Photo.find({
+			tags: { $all: tags }
+		}, function(err, obj) {
+			callback(err, obj);
+		});
+	},
+	findByImg: function(id, callback) {
+		Photo.findOne({
+			seq: id
+		}, function(err, obj) {
+			callback(err, obj);
+		});
+	},
+	findAll: function(callback){
+		Photo.find({}, function(err, docs){
+			callback(err, docs);
 		});
 	},
 	getNextSequence: function(name, callback) {

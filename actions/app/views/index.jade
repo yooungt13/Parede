@@ -1,12 +1,9 @@
 doctype html
 html(ng-app='Parede')
   head
-    title= title
+    title= 'Wecolme to Parede, an automatic classification album.'
     link(rel='stylesheet', href='/css/index.css')
-    script(type='text/javascript', src='/js/basics/angular.min.js')
-    script(type='text/javascript', src='/js/basics/jQuery.min.js')
-    script(type='text/javascript', src='/js/app.js')
-    script(type='text/javascript', src='/js/controllers/LoginController.js')
+    link(rel='stylesheet', href='/js/plugins/skippr/jquery.skippr.css')
   section(ng-controller='LoginController')
     .main
       .left
@@ -25,8 +22,26 @@ html(ng-app='Parede')
             span Maybe
             a(href='') Create a New Count
           .tag Login
+      #container(style='height:450px;width:765px;position:absolute;z-index:1;')
+        #theTarget
+          div(style='background-image: url(./data/origin/19.jpg)')
+          div(style='background-image: url(./data/origin/20.jpg)')
+          div(style='background-image: url(./data/origin/3.jpg)')
+          div(style='background-image: url(./data/origin/13.jpg)')
+          div(style='background-image: url(./data/origin/24.jpg)')
   footer
     p 所有内容仅限于学习参考，切勿商用
     p
       | Copyright © 2014
       a(href='https://github.com/yooungt13') 有田十三
+  script(type='text/javascript', src='/js/basics/angular.min.js')
+  script(type='text/javascript', src='/js/basics/jQuery.min.js')
+  script(type='text/javascript', src='/js/app.js')
+  script(type='text/javascript', src='/js/controllers/LoginController.js')
+  script(type='text/javascript', src='/js/plugins/skippr/jquery.skippr.js')
+  script(type='text/javascript').
+    $(document).ready(function(){
+      $("#theTarget").skippr({
+        autoPlay: true
+      });
+    });

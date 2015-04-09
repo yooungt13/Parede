@@ -1,0 +1,50 @@
+extends layouts/default
+
+block content
+  section.info
+    .info_wrap
+      .head_info
+        img.user_head(src='./img/t.jpg', alt='pic')
+        .user_info
+          .user_title Tian
+          .user_dscrip 牛逼的相册不解释
+      ul.class_list
+        li.item.first
+          a.curr.cb(href='/home') Content
+          span.arrow
+        li.item
+          a.tb(href='') Time
+        li.item
+          a.lb(href='') Location
+      a(href='')
+        img.extra(src='./img/logo.png', alt='logo')
+  section.main
+    article(ng-controller='PhotoController')
+      .op_box
+        ul
+          li.item
+            a.menu.button(href='./classify') Upload
+          li.item
+            input#tagSearch(type='search')
+            a.menu.button#tagSubmit(href='', ng-click='tagSubmit();') Search
+          li.item
+            input(type='file', name='image', onchange='prevChange(this, \'preview\')')
+            //form(method='post', action='/upload', enctype='multipart/form-data')                            
+      .search#searchPrev
+        img#preview(alt='preview')
+        a#confirm.menu.button(href='') Search
+      .albums#albums
+  link(rel='stylesheet' href='../js/plugins/fancybox/jquery.fancybox.css')
+  script(src='../js/basics/jQuery.min.js')
+  script(src='../js/plugins/fancybox/jquery.fancybox.js')
+  script(src='../js/plugins/album.js')
+  script.
+    (function(){
+      $(".fancybox").fancybox({
+        openEffect  : 'none',
+        closeEffect : 'none'
+      });
+    })();
+
+
+  

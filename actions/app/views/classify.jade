@@ -1,0 +1,66 @@
+extends layouts/default
+
+block content
+  section.info
+    .info_wrap
+      .head_info
+        img.user_head(src='./img/t.jpg', alt='pic')
+        .user_info
+          .user_title Tian
+          .user_dscrip 有田十三的相册
+      ul.class_list
+        li.item.first
+          a.curr.cb(href='./home') Content
+          span.arrow
+        li.item
+          a.tb(href='') Time
+        li.item
+          a.lb(href='') Location
+      a(href='')
+        img.extra(src='./img/logo.png', alt='logo')
+  section.main
+    .demo-container
+        video#live.video-preview(autoplay='')
+        .top-section
+          canvas.image-preview-canvas
+          canvas#image-preview.image-preview
+          #results.results-container
+            .results-title Looks like:
+            table#results-list.results-list
+            .time
+          #exists.results-container
+            .results-title Choose existings:
+            table#exists-list.results-list 
+          #addtag.results-container
+            .results-title Add tags:
+            table#add-list.results-list
+              tr
+                td
+                  textarea
+              tr
+                td(style='font-size: 10px; color: #aaa')
+                  输入自定义标签，以空格分开
+        .action-section
+          .file-button-container
+            span.file-wrapper
+              input#photo(type='file', name='photo')
+              span.action-button.load-image Choose a Photo
+          .action-button.webgl-toggle Enable Upload
+        .loading-container
+          .loading-message
+            | Loading the neural network - 
+            span.loading-amount 0.0
+            |  of 60 million connections
+          progress#network-progress-bar(value='0', max='100')
+
+  link(rel='stylesheet', type='text/css', href='../css/deepbelief.css')
+  script(type='text/javascript', src='../js/basics/jquery-2.0.3.min.js')
+  script(type='text/javascript', src='../js/basics/underscore.js')
+  script(type='text/javascript', src='../js/basics/glMatrix.js')
+  script(type='text/javascript', src='../js/basics/webgl.js')
+  script(type='text/javascript', src='../js/plugins/dp/jpcnn.js')
+  script(type='text/javascript', src='../js/plugins/dp/dp.js')
+
+
+
+  

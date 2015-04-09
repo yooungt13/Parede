@@ -10,7 +10,7 @@ block content
           .user_dscrip 牛逼的相册不解释
       ul.class_list
         li.item.first
-          a.curr.cb(href='') Content
+          a.curr.cb(href='./home') Content
           span.arrow
         li.item
           a.tb(href='') Time
@@ -23,23 +23,26 @@ block content
       .op_box
         ul
           li.item
-            a.menu.button(href='', ng-click='imgSubmit();') Upload
+            a.menu.button(href='./classify') Classify
           li.item
-            a.menu(href='') Create
+            a.menu.button(href='', ng-click='imgSubmit()') Generate Data
           li.item
             input(type='search')
           li.item
-            form(method='post', action='/upload', enctype='multipart/form-data')
-              input(type='file', name='image')
-              input(type='submit', name='submit', value='Submit')
+            //form(method='post', action='/upload', enctype='multipart/form-data')
+            //  input(type='file', name='image')
+            //  input(type='submit', name='submit', value='Submit')
+            // input#myId(type='hidden', name='imageurl')
+            // input#filePath(type='file', name='filePath')
+            // input#fileLoad(type='button', value='Upload', name='fileLoad', ng-click='fileUpload()')
       .albums
         .album(ng-repeat="album in albums")
           .album_cover
-            a(href='album.html')
+            a(href='album?tag={{ album._id }}')
               img(src='{{ album.cover }}', alt='album_cover')
           .title
             span {{ album._id }}
             span.fg9 ({{ album.photos.length }})
           .dscrip
-            .left.fg9 Created in {{ album.time }}
+            .left.fg9 Created in {{ album.time.substring(0,10) }}
             span.right

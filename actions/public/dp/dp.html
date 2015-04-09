@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <title>Automatic Classification</title>
+  <script type="text/javascript" src="JavascriptLibrary/Utils/modernizr.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="JavascriptLibrary/CSS/bootstrap-2.3.1.min.css" />
+  <link rel="stylesheet" type="text/css" href="JavascriptLibrary/CSS/bootstrap-responsive-2.3.1.min.css" />
+  <link rel="stylesheet" type="text/css" href="JavascriptLibrary/CSS/flat-ui.css" />
+  <link rel="stylesheet" type="text/css" href="JavascriptLibrary/CSS/spotter.css" />
+  <link rel="stylesheet" type="text/css" href="JavascriptLibrary/CSS/deepbelief.css" />
+
+</head>
+<body id="deepbeliefdemo">
+  <div id="wrap">
+    <div class="container-fluid">
+  <div class="row-fluid">
+
+    <div class="span12 header">
+      <div>
+        <div class="logo">
+          Automatical Classification
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- /row-fluid -->
+</div> <!-- /container -->
+
+<div class="demo-container">
+  <video class="video-preview" id="live" autoplay></video>
+
+  <div class="top-section">
+    <canvas class="image-preview-canvas"></canvas>
+    <canvas class="image-preview" id="image-preview"></canvas>
+    <div class="results-container">
+      <div class="results-title">Looks like:</div>
+      <table class="results-list"></table>
+      <div class="time"></div>
+    </div>
+  </div>
+
+  <div class="action-section">
+    <div class="file-button-container">
+      <span class="file-wrapper">
+        <input type="file" name="photo" id="photo" />
+        <span class="action-button load-image">Choose a Photo</span>
+      </span>
+    </div>
+    <div class="action-button webgl-toggle">Enable Upload</div>
+  </div>
+
+  <div class="loading-container">
+    <div class="loading-message">
+      Loading the neural network - <span class="loading-amount">0.0</span> of 60 million connections
+    </div>
+    <progress id="network-progress-bar" value="0" max="100"></progress>
+  </div>
+
+  <div class="compatibility-container">
+    <div class="compatibility-message">
+      Checking to see if your browser supports WebGL
+    </div>
+    <div class="compatibility-action">
+    </div>
+  </div>
+
+</div>
+
+  <script type="text/javascript" src="JavascriptLibrary/Utils/jquery-2.0.3.min.js"></script>
+  <script type="text/javascript" src="JavascriptLibrary/Utils/underscore.js"></script>
+  <script type="text/javascript" src="JavascriptLibrary/Utils/glMatrix.js"></script>
+  <script type="text/javascript" src="JavascriptLibrary/Utils/webgl.js"></script>
+  <script type="text/javascript" src="JavascriptLibrary/jpcnn.js"></script>
+
+    <script type="text/javascript">
+var g_isWebcamOn = false;
+var g_wantDemo = true;
+var g_network;
+var g_video;
+var g_demoPhotoUrls = [
+  // 'abacus.jpg',
+  // 'boat.png',
+  // 'cup.png'
+  'pizza.jpg'
+];
+
+function onNetworkProgress(percentComplete) {
+  var progressBar = document.getElementById('network-progress-bar');
+  progressBar.value = percentComplete;
+  var totalConnections = 60;
+  var currentConnections = ((percentComplete * totalConnections) / 100).toFixed(1);
+  $('.loading-amount').text(currentConnections);
+}
+
+function onNetworkLoad() {
+  $('.loading-container').css({display: 'none'});
+  startClassification();
+  g_isReady = true;
+}
+
+function makeUpload() {
+  // 上传图片 与 标签
+}
+
+function startClassification() {
+  if (g_wantDemo) {
+    g_currentImage = undefined;
+    $('.vote-tag-container').hide();
+    // 继续循环使用demo图片
+    // _.delay(startClassification, 5000);
+  }
+  var demoPhotoIndex = Math.floor(Math.random() * g_demoPhotoUrls.length);
+  var demoPhotoUrl = g_demoPhotoUrls[demoPhotoIndex];
+  var proxiedUrl = 'JavascriptLibrary/Images/' + demoPhotoUrl;
+   var demoImage = $('<img>');
+  demoImage.on('load', function(event) {
+    var demoImageElement = demoImage.get(0);
+    if (g_wantDemo) {
+      classifyImage(demoImageElement, demoImageElement.width, demoImageElement.height);
+    }
+  });
+  demoImage.attr('src', proxiedUrl);
+}
+
+function classifyImage(image, width, height) {
+
+  var destSize = 256;
+
+  var canvasElement = $('.image-preview-canvas').get(0);
+  canvasElement.width = destSize;
+  canvasElement.height = destSize;
+
+  var sourceX;
+  var sourceY;
+  var sourceSize;
+  if (width > height) {
+    sourceSize = height;
+    sourceX = ((width - height) / 2);
+    sourceY = 0;
+  } else {
+    sourceSize = width;
+    sourceX = 0;
+    sourceY = ((height - width) / 2);
+  }
+
+  var canvas = canvasElement.getContext('2d');
+  // Workaround for Firefox bug that causes an error when the video's
+  // not yet ready and we try to draw with it. See:
+  // http://stackoverflow.com/questions/18580844/firefox-drawimagevideo-fails-with-ns-error-not-available-component-is-not-av
+  try {
+    canvas.drawImage(image, sourceX, sourceY, sourceSize, sourceSize, 0, 0, destSize, destSize);
+  } catch (e) {
+    if (e.name == 'NS_ERROR_NOT_AVAILABLE') {
+      return;
+    } else {
+      throw e;
+    }
+  }
+
+  var previewElement = $('.image-preview');
+  var previewCanvas = previewElement.get(0).getContext('2d');
+
+  var previewSize = previewElement.width();
+  previewElement.attr('width', previewSize);
+  previewElement.attr('height', previewSize);
+  previewCanvas.drawImage(canvasElement, 0, 0, previewSize, previewSize);
+
+  var imageData = canvas.getImageData(0, 0, destSize, destSize);
+
+  var inputBuffer = new Buffer([destSize, destSize, 3]);
+  for (var y = 0; y < destSize; y += 1) {
+    for (var x = 0; x < destSize; x += 1) {
+      var imageOffset = (y * destSize * 4) + (x * 4);
+      var bufferOffset = (y * destSize * 3) + (x * 3);
+      inputBuffer._data[bufferOffset + 0] = imageData.data[imageOffset + 0];
+      inputBuffer._data[bufferOffset + 1] = imageData.data[imageOffset + 1];
+      inputBuffer._data[bufferOffset + 2] = imageData.data[imageOffset + 2];
+    }
+  }
+  inputBuffer.setName('inputBuffer');
+
+  var startTime = new Date().getTime();
+  var results = g_network.classifyImage(inputBuffer, false, 0, g_webGLEnabled);
+  var endTime = new Date().getTime();
+  var duration = (endTime - startTime);
+
+  var topResults = _.select(results, function(prediction) {
+    return (prediction.value > 0.01);
+  });
+  topResults = topResults.sort(function(a, b) { return (b.value - a.value); });
+  topResults = _.first(topResults, 10);
+  var resultsList = $('.results-list');
+  resultsList.empty();
+  if (topResults.length > 0) {
+    _.each(topResults, function(prediction) {
+      var score = Math.round(prediction.value * 100);
+      var resultEntry = $('<tr>')
+      .addClass('result-entry');
+      var resultScore = $('<td>').text(score + '%').addClass('score');
+      var prettyLabel = prediction.label.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+          return letter.toUpperCase();
+      });
+      var resultLabel = $('<td>').text(prettyLabel).addClass('label');
+      resultEntry.append(resultScore);
+      resultEntry.append(resultLabel);
+      resultsList.append(resultEntry);
+    });
+  } else {
+    var resultEntry = $('<div>')
+    .addClass('result-entry')
+    .text('No results found');
+    resultsList.append(resultEntry);
+  }
+
+  $('.time').text('Took ' + duration + 'ms');
+}
+
+var SITE = SITE || {};
+
+SITE.fileInputs = function() {
+  var $this = $(this),
+      $val = $this.val(),
+      valArray = $val.split('\\'),
+      newVal = valArray[valArray.length - 1],
+      $button = $this.siblings('.button'),
+      $fakeFile = $this.siblings('.file-holder');
+  if (newVal !== '') {
+    $button.text('Photo Chosen');
+    var fileInput = $('#photo').get(0);
+    onFilePick(fileInput.files[0]);
+  }
+};
+
+var g_uploadedImages = {};
+var g_isReady = false;
+var g_currentImage;
+
+function onFilePick(file) {
+  var imageType = /image.*/;
+  if (!file.type.match(imageType)) {
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var image = new Image();
+    image.src = reader.result;
+    g_wantDemo = false;
+    // Delay is needed for Firefox for some reason.
+    _.delay(function() {
+      classifyImage(image, image.width, image.height);
+    }, 200);
+  }
+  reader.readAsDataURL(file);
+}
+
+function hasWebGL() {
+  var canvas = document.createElement('canvas');
+  var gl;
+  try {
+    gl = canvas.getContext('webgl');
+  } catch (x) {
+    gl = null;
+  }
+
+  if (gl === null) {
+    try {
+      gl = canvas.getContext('experimental-webgl');
+      glExperimental = true;
+    } catch (x) {
+      gl = null;
+    }
+  }
+
+  if (gl) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+(function() {
+  var matched, browser;
+  // Use of jQuery.browser is frowned upon.
+  // More details: http://api.jquery.com/jQuery.browser
+  // jQuery.uaMatch maintained for back-compat
+  jQuery.uaMatch = function(ua) {
+    ua = ua.toLowerCase();
+
+    var match = /(chrome)[ \/]([\w.]+)/.exec(ua) ||
+      /(webkit)[ \/]([\w.]+)/.exec(ua) ||
+      /(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
+      /(msie) ([\w.]+)/.exec(ua) ||
+      ua.indexOf('compatible') < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
+      [];
+
+    return {
+      browser: match[1] || '',
+      version: match[2] || '0'
+    };
+  };
+
+  matched = jQuery.uaMatch(navigator.userAgent);
+  browser = {};
+
+  if (matched.browser) {
+    browser[matched.browser] = true;
+    browser.version = matched.version;
+  }
+
+  // Chrome is Webkit, but Webkit is also Safari.
+  if (browser.chrome) {
+    browser.webkit = true;
+  } else if (browser.webkit) {
+    browser.safari = true;
+  }
+
+  jQuery.browser = browser;
+})();
+
+var g_hasWebGL = false;
+// var g_webGLEnabled = false;
+var g_webGLEnabled = true;
+
+function setWebGLEnabled(state) {
+  // if (state && !g_hasWebGL) {
+  //   alert("Sorry, no WebGL support detected in this browser!");
+  //   return;
+  // }
+  g_webGLEnabled = state;
+  // if (state) {
+  //   $('.webgl-toggle').text('Disable WebGL');
+  // } else {
+  //   $('.webgl-toggle').text('Enable WebGL');
+  // }
+}
+
+function checkCompatibility() {
+  //g_hasWebGL = hasWebGL();
+  //if (g_hasWebGL) {
+    // Some strange WebGL issues have cropped up on Firefox, so disable it by default for now
+    // if (!$.browser.mozilla) {
+    //   setWebGLEnabled(true);
+    // }
+
+    // var maxTextureSize = getMaxTextureSize();
+    // var neededTextureSize = 4096;
+    // if (maxTextureSize < neededTextureSize) {
+    //   $('.compatibility-message').html('Your graphics card doesn\'t support large enough textures.');
+    //   $('.compatibility-action').html(
+    //     'This demo requires a minimum of ' +
+    //     neededTextureSize + 'x' + neededTextureSize +
+    //     ', and your GPU can only handle ' +
+    //     maxTextureSize + 'x' + maxTextureSize + ', sorry.');
+    // }
+  //}
+  $('.compatibility-container').css({display: 'none'});
+  $('.loading-container').css({display: 'block'});
+  return true;
+}
+
+$(_.delay(function() {
+  if (checkCompatibility()) {
+    $('.file-wrapper input[type=file]').bind('change focus click', SITE.fileInputs);
+
+    $('.load-image').on('click', function(event) {
+
+    });
+    $('.webgl-toggle').on('click', function(event) {
+      makeUpload();
+    });
+    g_video = $('#live').get(0);
+    var networkUrl = 'networks/jetpac_untransposed.ntwk'
+    g_network = new Network(networkUrl, onNetworkLoad, {progress: onNetworkProgress});
+  }
+}, 0));
+    </script>
+
+</body>

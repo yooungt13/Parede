@@ -61,12 +61,14 @@ section {
 }
 
 .right {
-	margin-top: -55%;
+	position: absolute;
+	margin-top: -54%;
 	float: right;
 	width: 220px;
 	border: 1px solid #999;
 	background: #fff;
 	padding: 20px;
+	z-index: 1000;
 	-webkit-transition: all 0.8s ease;
 }
 
