@@ -44,82 +44,82 @@ router.post('/upload', multipart(), function(req, res) {
 	// 	});
 	// });
 
-	// res.json([{
+	var one_data = [{
+		tUrl: '../data/thumb/10.jpg',
+		oUrl: '../data/origin/10.jpg',
+		tags: ['bike', 'tree', 'women', 'sunrise'],
+		descrip: 'Do not, for one repulse, forgo the purpose that you resolved to effort.',
+		date: new Date().toLocaleString()
+	}];
+
+	// var one_data = [{
+	// 	tUrl: '../data/thumb/0.jpg',
+	// 	oUrl: '../data/origin/0.jpg',
+	// 	tags: ['moutain', 'lake', 'women'],
+	// 	descrip: 'Do not, for one repulse, forgo the purpose that you resolved to effort.',
+	// 	date: new Date().toLocaleString()
+	// }, {
+	// 	tUrl: '../data/thumb/1.jpg',
+	// 	oUrl: '../data/origin/1.jpg',
+	// 	tags: ['sunrise', 'outdoor', 'women'],
+	// 	descrip: 'The man who has made up his mind to win will never say " Impossible".( Napoleon )',
+	// 	date: new Date().toLocaleString()
+	// }, {
+	// 	tUrl: '../data/thumb/2.jpg',
+	// 	oUrl: '../data/origin/2.jpg',
+	// 	tags: ['bus', 'street'],
+	// 	descrip: 'Miracles sometimes occur, but one has to work terribly for them. ( C. Weizmann )',
+	// 	date: new Date().toLocaleString()
+	// }, {
+	// 	tUrl: '../data/thumb/3.jpg',
+	// 	oUrl: '../data/origin/3.jpg',
+	// 	tags: ['sunrise', 'tree', 'women'],
+	// 	descrip: '',
+	// 	date: new Date().toLocaleString()
+	// }, {
+	// 	tUrl: '../data/thumb/4.jpg',
+	// 	oUrl: '../data/origin/4.jpg',
+	// 	tags: ['flag', 'church'],
+	// 	descrip: 'There is no such thing as darkness; only a failure to see. ( Muggeridge )',
+	// 	date: new Date().toLocaleString()
+	// }, {
+	// 	tUrl: '../data/thumb/5.jpg',
+	// 	oUrl: '../data/origin/5.jpg',
+	// 	tags: ['flower', 'tree', 'women'],
+	// 	descrip: 'Time is a bird for ever on the wing. ( T. W. Robertson )',
+	// 	date: new Date().toLocaleString()
+	// }, {
+	// 	tUrl: '../data/thumb/6.jpg',
+	// 	oUrl: '../data/origin/6.jpg',
+	// 	tags: ['moutain', 'food', 'women'],
+	// 	descrip: 'The unexamined life is not worth living. --Socrates ',
+	// 	date: new Date().toLocaleString()
+	// }, {
+	// 	tUrl: '../data/thumb/7.jpg',
+	// 	oUrl: '../data/origin/7.jpg',
+	// 	tags: ['ice', 'outdoor', 'women'],
+	// 	descrip: 'Achievement provides the only real pleasure in life .',
+	// 	date: new Date().toLocaleString()
+	// }, {
+	// 	tUrl: '../data/thumb/8.jpg',
+	// 	oUrl: '../data/origin/8.jpg',
+	// 	tags: ['bike', 'bag'],
+	// 	descrip: 'Man errs as long as he strives.',
+	// 	date: new Date().toLocaleString()
+	// }, {
 	// 	tUrl: '../data/thumb/9.jpg',
 	// 	oUrl: '../data/origin/9.jpg',
 	// 	tags: ['light', 'bag', 'women'],
 	// 	descrip: 'Energy and persistence conquer all things.',
 	// 	date: new Date().toLocaleString()
-	// }]);
+	// }];
 
-	var one_data = [{
-		tUrl: '../data/thumb/0.jpg',
-		oUrl: '../data/origin/0.jpg',
-		tags: ['moutain', 'lake', 'women'],
-		descrip: 'Do not, for one repulse, forgo the purpose that you resolved to effort.',
-		date: new Date().toLocaleString()
-	}, {
-		tUrl: '../data/thumb/1.jpg',
-		oUrl: '../data/origin/1.jpg',
-		tags: ['sunrise', 'outdoor', 'women'],
-		descrip: 'The man who has made up his mind to win will never say " Impossible".( Napoleon )',
-		date: new Date().toLocaleString()
-	}, {
-		tUrl: '../data/thumb/2.jpg',
-		oUrl: '../data/origin/2.jpg',
-		tags: ['bus', 'street'],
-		descrip: 'Miracles sometimes occur, but one has to work terribly for them. ( C. Weizmann )',
-		date: new Date().toLocaleString()
-	}, {
-		tUrl: '../data/thumb/3.jpg',
-		oUrl: '../data/origin/3.jpg',
-		tags: ['sunrise', 'tree', 'women'],
-		descrip: '',
-		date: new Date().toLocaleString()
-	}, {
-		tUrl: '../data/thumb/4.jpg',
-		oUrl: '../data/origin/4.jpg',
-		tags: ['flag', 'church'],
-		descrip: 'There is no such thing as darkness; only a failure to see. ( Muggeridge )',
-		date: new Date().toLocaleString()
-	}, {
-		tUrl: '../data/thumb/5.jpg',
-		oUrl: '../data/origin/5.jpg',
-		tags: ['flower', 'tree', 'women'],
-		descrip: 'Time is a bird for ever on the wing. ( T. W. Robertson )',
-		date: new Date().toLocaleString()
-	}, {
-		tUrl: '../data/thumb/6.jpg',
-		oUrl: '../data/origin/6.jpg',
-		tags: ['moutain', 'food', 'women'],
-		descrip: 'The unexamined life is not worth living. --Socrates ',
-		date: new Date().toLocaleString()
-	}, {
-		tUrl: '../data/thumb/7.jpg',
-		oUrl: '../data/origin/7.jpg',
-		tags: ['ice', 'outdoor', 'women'],
-		descrip: 'Achievement provides the only real pleasure in life .',
-		date: new Date().toLocaleString()
-	}, {
-		tUrl: '../data/thumb/8.jpg',
-		oUrl: '../data/origin/8.jpg',
-		tags: ['bike', 'bag'],
-		descrip: 'Man errs as long as he strives.',
-		date: new Date().toLocaleString()
-	}, {
-		tUrl: '../data/thumb/9.jpg',
-		oUrl: '../data/origin/9.jpg',
-		tags: ['light', 'bag', 'women'],
-		descrip: 'Energy and persistence conquer all things.',
-		date: new Date().toLocaleString()
-	}];
+	// var data = [];
+	// for( var i = 0; i < 25; i++ ){
+	// 	data = data.concat(one_data);
+	// }
 
-	var data = [];
-	for( var i = 0; i < 25; i++ ){
-		data = data.concat(one_data);
-	}
-
-	res.json(data);
+	res.json(one_data);
 });
 
 var photoDao = require('../models/Photo.js');
@@ -159,6 +159,7 @@ router.post('/distribute', function(req, res) {
 
 								// update
 								albumDao.update(album, function(err) {
+									console.log("Update success.")
 									if (err) throw err;
 								});
 							}

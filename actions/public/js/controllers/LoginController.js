@@ -4,7 +4,6 @@ app.controller("LoginController", function($scope, $http) {
 	$scope.loginSubmit = function(login) {
 		console.log("Login info: " + login.email + "/" + login.password);
 		if (login != null) {
-
 			$http.post("login", login)
 				.success(function(data, status, headers, config) {
 					alert(data.description);

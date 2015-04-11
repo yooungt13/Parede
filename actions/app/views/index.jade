@@ -16,7 +16,7 @@ html(ng-app='Parede')
               input(type='email', name='email', required, placeholder='Email', ng-model='login.email')
               input(type='password', name='password', required, placeholder='Password', ng-model='login.password')
             .persistency
-              p(ng-show='loginForm.email.$invalid') Please input email/pwd
+              p Please input email/pwd
             button#submit_btn(ng-click='loginSubmit(login)') Login
           .signup
             span Maybe
