@@ -299,8 +299,40 @@ ul.class_list .arrow {
 	cursor: pointer;
 }
 
-.op_box .item input {
-	margin: 8px 0 8px 50px; 
+#tagSearch {
+	display: inline-block;
+	margin: 3px -1px 2px 0px; 
+	height: 28px;
+	border: 1px solid #1c9fe5;
+	float: left;
+}
+
+#tagSearch-wrapper {
+	margin-left: 40px;
+}
+
+#image {
+	position: relative;
+	cursor: pointer;
+	font-size: 100%;
+	opacity: 0.01;
+	z-index: 1000px;
+	width: 60px;
+	right: 70px;
+	height: 28px;
+	margin: 3px 0;
+}
+
+#imgSubmit {
+	cursor: pointer;
+	position: relative;
+	top: 0; 
+	z-index: 1px;
+}
+
+#preview {
+	max-width: 400px;
+	max-width: 400px;
 }
 
 .search {
@@ -423,6 +455,44 @@ ul.class_list .arrow {
 
 .col .wrap:hover {
 	box-shadow: 0 0 5px rgba(0,0,0,0.5);
+	cursor: pointer;
+}
+
+.tips {
+	font-size: 16px;
+	line-height: 16px;
+	color: #aaa;
+	text-align: left;
+	margin: 10px 0 0 5px;
+}
+
+.tips strong {
+	margin: 0 5px;
+	font-size: 20px;
+	color: #c44;
+}
+
+.preview-wrapper {
+	width: 430px;
+	border: 1px solid #ccc;
+	padding: 15px 0;
+}
+
+.preview-button {
+	display: inline-block;
+	height: 28px;
+	line-height: 28px;
+	padding: 0 9px;
+	margin: 10px 0;
+	background: #c44;
+	border: 1px solid #c44;
+	color: #fff;
+	border-radius: 3px;
+	float: right;
+}
+
+.preview-button:hover {
+	box-shadow: 0 0 10px rgba(0,0,0,0.2);
 	cursor: pointer;
 }
 

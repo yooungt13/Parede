@@ -35,7 +35,7 @@ block content
             // input#myId(type='hidden', name='imageurl')
             // input#filePath(type='file', name='filePath')
             // input#fileLoad(type='button', value='Upload', name='fileLoad', ng-click='fileUpload()')
-      .albums
+      .albums#albums
         .album(ng-repeat="album in albums")
           .album_cover
             a(href='album?tag={{ album._id }}')

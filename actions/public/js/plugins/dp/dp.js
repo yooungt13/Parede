@@ -181,7 +181,6 @@ function loadExists() {
 
 function bindClicker() {
   var $tr = $('tr');
-  
 }
 
 (function() {
@@ -222,7 +221,6 @@ var g_webGLEnabled = true;
 
 $(_.delay(function() {
   $('.file-wrapper input[type=file]').bind('change focus click', SITE.fileInputs);
-  $('.load-image').on('click', function(event) {});
   $('.webgl-toggle').on('click', function(event) {
     makeUpload();
   });

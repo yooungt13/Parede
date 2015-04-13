@@ -25,14 +25,12 @@ block content
           li.item
             a.menu.button(href='./classify') Upload
           li.item
-            input#tagSearch(type='search')
-            a.menu.button#tagSubmit(href='', ng-click='tagSubmit();') Search
-          li.item
-            input(type='file', name='image', onchange='prevChange(this, \'preview\')')
+            a.menu.button#imgSubmit(href='') Retrival
+            input(type='file', name='image', id='image')      
             //form(method='post', action='/upload', enctype='multipart/form-data')
-      .search#searchPrev
-        img#preview(alt='preview')
-        a#confirm.menu.button(href='') Search
+          li.item#tagSearch-wrapper
+            input#tagSearch(type='text')
+            a.menu.button#tagSubmit(href='', ng-click='tagSubmit();') Search        
       .albums#albums
   link(rel='stylesheet' href='../js/plugins/fancybox/jquery.fancybox.css')
   script(src='../js/basics/jQuery.min.js')
