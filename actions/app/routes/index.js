@@ -2,11 +2,13 @@ var express = require('express'),
 	router = express.Router();
 
 var fs = require('fs'),
+	gm = require('gm'),
 	path = require('path'),
 	multipart = require('connect-multiparty');
 
 var albumDao = require('../models/Album.js'),
 	photoDao = require('../models/Photo.js');
+	descrip = require('../models/Descrip.js');
 
 // GET login page. 
 router.get('/', function(req, res) {
@@ -24,25 +26,107 @@ router.get('/home', function(req, res) {
 
 router.post('/upload', multipart(), function(req, res) {
 	console.log('Upload\'ve been called.');
+	
+	var imageMagick = gm.subClass({ imageMagick: true });
 
-	// var filePath = req.files.image.path;
-	// var newPath = __dirname + "/" + path.basename(filePath);
+	var filePath = req.files.photo.path,
+	    fileName = path.basename(filePath),
+		oPath = "./public/data/origin/" + fileName,
+		tPath = "./public/data/thumb/" + fileName,
+		size = req.files.photo.size;
 
-	//把图片从临时文件夹复制到目的文件夹，当然最好删除临时文件
+	var tags = ['tree', 'women'];
+
+	if ( size > 2*1024*1024 ) {
+		fs.unlink(path, function() {    //fs.unlink 删除用户上传的文件
+		  res.json({ret:201});
+		});
+	} else if (req.files.photo.type.split('/')[0] != 'image') {
+		fs.unlink(filePath, function() {
+		  res.json({ret:202});
+		});
+	} else {
+		console.log(filePath);
+		imageMagick(filePath)
+			.resize(200, 150, '!') //加('!')强行把图片缩放
+			.autoOrient()
+			.write(tPath, function(err){
+			  if (err) {
+			    console.log(err);
+			    res.json({ret:204});
+			  }else {
+			  	res.json({ret:1});
+			  }
+			  fs.unlink(filePath, function() {
+			    return res.json({ret:203});
+			  });
+			});
+	}
+
+	// 把图片从临时文件夹复制到目的文件夹，当然最好删除临时文件
 	// fs.readFile(filePath, function(err, data) {
 	// 	if (err) {
 	// 		res.send(err);
+	// 		console.log('Readfile failed.');
 	// 		return;
 	// 	}
 
 	// 	fs.writeFile(newPath, data, function(err) {
 	// 		if (!err) {
-	// 			res.redirect('/home');
+	// 			console.log('WriteFile success.');
+
+	// 			// 将图片信息存入数据库，并返回索引
+	// 			photoDao.save({
+	// 				tUrl: '../data/thumb/' + fileName,
+	// 				oUrl: '../data/origin/' + fileName,
+	// 				tags: tags,
+	// 				descrip: descrip.data[~~(Math.random()*descrip.data.length)],
+	// 				date: new Date().toLocaleString()
+	// 			}, function(err, photoid) {
+	// 				if (err) throw err;
+	// 				console.log("photoid: " + photoid);
+
+	// 				// 将图片插入相册 
+	// 				for (var j = 0, tlen = tags.length; j < tlen; j++) {
+	// 					(function(tag) {
+	// 						albumDao.findById(tag, function(err, album) {
+	// 							if (!album) {	
+	// 								// save
+	// 								albumDao.save({
+	// 									_id: tag,
+	// 									userid: 1,
+	// 									photos: [photoid],
+	// 									time: new Date(),
+	// 									cover: photo.tUrl
+	// 								}, function(err) {
+	// 									if (err) throw err;
+	// 								});
+	// 							} else {
+	// 								album.photos.push(photoid);
+	
+	// 								// update
+	// 								albumDao.update(album, function(err) {
+	// 									console.log("Update success.")
+	// 									if (err) throw err;
+	// 								});
+	// 							}
+	// 						});
+	// 					})(tags[j]);
+	// 				};
+	// 			});
+
+	// 			res.json({
+	// 				ret: 1
+	// 			});
 	// 		} else {
+	// 			console.log('WriteFile failed.');
 	// 			res.send(err);
 	// 		}
 	// 	});
-	// });
+	//});
+});
+
+router.get('/generate', function(req, res) {
 
 	var one_data = [{
 		tUrl: '../data/thumb/10.jpg',
@@ -121,8 +205,6 @@ router.post('/upload', multipart(), function(req, res) {
 
 	res.json(one_data);
 });
-
-var photoDao = require('../models/Photo.js');
 
 router.post('/distribute', function(req, res) {
 	var photos = req.body;

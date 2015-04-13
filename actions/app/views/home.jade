@@ -25,13 +25,15 @@ block content
           li.item
             a.menu.button(href='./classify') Classify
           li.item
-            a.menu.button(href='', ng-click='imgSubmit()') Generate Data
+            a.menu.button#imgSubmit(href='') Retrival
+            input(type='file', name='image', id='image')      
+          li.item#tagSearch-wrapper
+            input#tagSearch(type='text')
+            a.menu.button#tagSubmit(href='', ng-click='tagSubmit();') Search  
           li.item
-            input(type='search')
+            a.menu.button(href='./generate') Generate Data
           li.item
             //form(method='post', action='/upload', enctype='multipart/form-data')
-            //  input(type='file', name='image')
-            //  input(type='submit', name='submit', value='Submit')
             // input#myId(type='hidden', name='imageurl')
             // input#filePath(type='file', name='filePath')
             // input#fileLoad(type='button', value='Upload', name='fileLoad', ng-click='fileUpload()')
@@ -46,3 +48,14 @@ block content
           .dscrip
             .left.fg9 Created in {{ album.time.substring(0,10) }}
             span.right
+  link(rel='stylesheet' href='../js/plugins/fancybox/jquery.fancybox.css')
+  script(src='../js/basics/jQuery.min.js')
+  script(src='../js/plugins/fancybox/jquery.fancybox.js')
+  script(src='../js/plugins/album.js')
+  script.
+    (function(){
+      $(".fancybox").fancybox({
+        openEffect  : 'none',
+        closeEffect : 'none'
+      });
+    })();

@@ -39,6 +39,7 @@ app.controller("PhotoController", function($scope, $http) {
 					+ '<a class="preview-button" id="imgSubmit">Go Retrival</a>'
 					+ '</div></div>';		
 				$('article').append(html);
+				$('#imgSubmit').bind();
 
 		      	var reader = new FileReader();
 		      	reader.onload = function (e) {
