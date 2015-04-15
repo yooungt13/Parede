@@ -7,7 +7,7 @@ var fs = require('fs'),
 	multipart = require('connect-multiparty');
 
 var albumDao = require('../models/Album.js'),
-	photoDao = require('../models/Photo.js');
+	photoDao = require('../models/Photo.js'),
 	descrip = require('../models/Descrip.js');
 
 // GET login page. 
@@ -26,40 +26,76 @@ router.get('/home', function(req, res) {
 
 router.post('/upload', multipart(), function(req, res) {
 	console.log('Upload\'ve been called.');
-	
-	var imageMagick = gm.subClass({ imageMagick: true });
+
+	var imageMagick = gm.subClass({
+		imageMagick: true
+	});
 
 	var filePath = req.files.photo.path,
-	    fileName = path.basename(filePath),
+		fileName = path.basename(filePath),
 		oPath = "./public/data/origin/" + fileName,
 		tPath = "./public/data/thumb/" + fileName,
 		size = req.files.photo.size;
 
 	var tags = ['tree', 'women'];
 
-	if ( size > 2*1024*1024 ) {
-		fs.unlink(path, function() {    //fs.unlink 删除用户上传的文件
-		  res.json({ret:201});
+	if (size > 2 * 1024 * 1024) {
+		fs.unlink(path, function() { //fs.unlink 删除用户上传的文件
+			res.json({
+				ret: 201
+			});
 		});
 	} else if (req.files.photo.type.split('/')[0] != 'image') {
 		fs.unlink(filePath, function() {
-		  res.json({ret:202});
+			res.json({
+				ret: 202
+			});
 		});
 	} else {
-		console.log(filePath);
+		// Write Original Photo
 		imageMagick(filePath)
-			.resize(200, 150, '!') //加('!')强行把图片缩放
 			.autoOrient()
-			.write(tPath, function(err){
-			  if (err) {
-			    console.log(err);
-			    res.json({ret:204});
-			  }else {
-			  	res.json({ret:1});
-			  }
-			  fs.unlink(filePath, function() {
-			    return res.json({ret:203});
-			  });
+			.write(oPath, function(err) {
+				if (err) {
+					console.log(err);
+					res.json({
+						ret: 203
+					});
+				} else {
+					// GET image.width & image.height
+					imageMagick(filePath).size(err, function(size) {
+						if (err) {
+							res.json({
+								ret: 204
+							});
+						}
+
+						var width = 200,
+							height = ~~(200 * (size.width / size.height));
+
+						// Write Thumbnails
+						imageMagick(filePath)
+							.resize(width, height, '!') //加('!')强行把图片缩放
+							.autoOrient()
+							.write(tPath, function(err) {
+								if (err) {
+									console.log(err);
+									res.json({
+										ret: 205
+									});
+								} else {
+									res.json({
+										ret: 1
+									});
+								}
+								fs.unlink(filePath, function() {
+									return res.json({
+										ret: 203
+									});
+								});
+							});
+					});
+				}
 			});
 	}
 
@@ -103,7 +139,7 @@ router.post('/upload', multipart(), function(req, res) {
 	// 								});
 	// 							} else {
 	// 								album.photos.push(photoid);
-	
+
 	// 								// update
 	// 								albumDao.update(album, function(err) {
 	// 									console.log("Update success.")

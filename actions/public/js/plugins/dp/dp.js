@@ -33,18 +33,20 @@ function makeUpload() {
   }
   var txtImg_url = $("#photo").val().toLowerCase();
   var txtImg_ext = txtImg_url.substring(txtImg_url.length - 3, txtImg_url.length);
-  if (txtImg_ext != "png" && txtImg_ext != "jpg") {
-    alert("仅支持jpg,png!");
+  if (txtImg_ext != "png" && txtImg_ext != "jpg" && txtImg_ext != "jpeg") {
+    alert("仅支持jpg,png,jpeg!");
     $("#photo").select();
     $("#photo").focus();
     return false;
   }
   var imagefile = $("#photo").get(0).files[0];
-  var size = imagefile.size / 1024.0;
-  if (size > 300) {
-    alert("图片大小不超过300K!");
+  var size = imagefile.size / ( 1024.0 * 1024.0 );
+  if (size > 2) {
+    alert("图片大小不超过2M!");
     return false;
   }
+
+  // 利用ajaxFileUpload上传图片
   $.ajaxFileUpload({
     url: 'http://localhost:3000/upload',
     secureuri: false,
