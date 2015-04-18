@@ -37,7 +37,8 @@ router.post('/upload', multipart(), function(req, res) {
 		tPath = "./public/data/thumb/" + fileName,
 		size = req.files.photo.size;
 
-	var tags = ['tree', 'women'];
+	var tagStr = req.body.tags,
+		tags = !!tagStr ? tagStr.split(',') : ['default'];
 
 	if (size > 2 * 1024 * 1024) {
 		fs.unlink(path, function() { //fs.unlink 删除用户上传的文件
@@ -63,15 +64,16 @@ router.post('/upload', multipart(), function(req, res) {
 					});
 				} else {
 					// GET image.width & image.height
-					imageMagick(filePath).size(err, function(size) {
+					imageMagick(filePath).size(function(err, size) {
 						if (err) {
 							res.json({
 								ret: 204
 							});
 						}
 
+						// Resize the size
 						var width = 200,
-							height = ~~(200 * (size.width / size.height));
+							height = ~~(200 * (size.height / size.width));
 
 						// Write Thumbnails
 						imageMagick(filePath)
@@ -84,6 +86,47 @@ router.post('/upload', multipart(), function(req, res) {
 										ret: 205
 									});
 								} else {
+									// 将图片信息存入数据库，并返回索引
+									var photo = {
+										tUrl: '../data/thumb/' + fileName,
+										oUrl: '../data/origin/' + fileName,
+										tags: tags,
+										descrip: descrip.data[~~(Math.random() * descrip.data.length)],
+										date: new Date().toLocaleString()
+									};
+
+									photoDao.save(photo, function(err, photoid) {
+										if (err) throw err;
+										// 将图片插入相册 
+										for (var j = 0, tlen = tags.length; j < tlen; j++) {
+											(function(tag) {
+												albumDao.findById(tag, function(err, album) {
+													if (!album) {
+														// save
+														albumDao.save({
+															_id: tag,
+															userid: 1,
+															photos: [photoid],
+															time: new Date(),
+															cover: photo.tUrl
+														}, function(err) {
+															if (err) throw err;
+														});
+													} else {
+														album.time = new Date();
+														album.photos.push(photoid);
+
+														// update
+														albumDao.update(album, function(err) {
+															console.log("Update success.")
+															if (err) throw err;
+														});
+													}
+												});
+											})(tags[j]);
+										};
+									});
+
 									res.json({
 										ret: 1
 									});
@@ -98,68 +141,6 @@ router.post('/upload', multipart(), function(req, res) {
 				}
 			});
 	}
-
-	// 把图片从临时文件夹复制到目的文件夹，当然最好删除临时文件
-	// fs.readFile(filePath, function(err, data) {
-	// 	if (err) {
-	// 		res.send(err);
-	// 		console.log('Readfile failed.');
-	// 		return;
-	// 	}
-
-	// 	fs.writeFile(newPath, data, function(err) {
-	// 		if (!err) {
-	// 			console.log('WriteFile success.');
-
-	// 			// 将图片信息存入数据库，并返回索引
-	// 			photoDao.save({
-	// 				tUrl: '../data/thumb/' + fileName,
-	// 				oUrl: '../data/origin/' + fileName,
-	// 				tags: tags,
-	// 				descrip: descrip.data[~~(Math.random()*descrip.data.length)],
-	// 				date: new Date().toLocaleString()
-	// 			}, function(err, photoid) {
-	// 				if (err) throw err;
-	// 				console.log("photoid: " + photoid);
-
-	// 				// 将图片插入相册 
-	// 				for (var j = 0, tlen = tags.length; j < tlen; j++) {
-	// 					(function(tag) {
-	// 						albumDao.findById(tag, function(err, album) {
-	// 							if (!album) {	
-	// 								// save
-	// 								albumDao.save({
-	// 									_id: tag,
-	// 									userid: 1,
-	// 									photos: [photoid],
-	// 									time: new Date(),
-	// 									cover: photo.tUrl
-	// 								}, function(err) {
-	// 									if (err) throw err;
-	// 								});
-	// 							} else {
-	// 								album.photos.push(photoid);
-
-	// 								// update
-	// 								albumDao.update(album, function(err) {
-	// 									console.log("Update success.")
-	// 									if (err) throw err;
-	// 								});
-	// 							}
-	// 						});
-	// 					})(tags[j]);
-	// 				};
-	// 			});
-
-	// 			res.json({
-	// 				ret: 1
-	// 			});
-	// 		} else {
-	// 			console.log('WriteFile failed.');
-	// 			res.send(err);
-	// 		}
-	// 	});
-	//});
 });
 
 router.get('/generate', function(req, res) {
@@ -175,7 +156,7 @@ router.get('/generate', function(req, res) {
 	// var one_data = [{
 	// 	tUrl: '../data/thumb/0.jpg',
 	// 	oUrl: '../data/origin/0.jpg',
-	// 	tags: ['moutain', 'lake', 'women'],
+	// 	tags: ['mountain', 'lake', 'women'],
 	// 	descrip: 'Do not, for one repulse, forgo the purpose that you resolved to effort.',
 	// 	date: new Date().toLocaleString()
 	// }, {
@@ -211,7 +192,7 @@ router.get('/generate', function(req, res) {
 	// }, {
 	// 	tUrl: '../data/thumb/6.jpg',
 	// 	oUrl: '../data/origin/6.jpg',
-	// 	tags: ['moutain', 'food', 'women'],
+	// 	tags: ['mountain', 'food', 'women'],
 	// 	descrip: 'The unexamined life is not worth living. --Socrates ',
 	// 	date: new Date().toLocaleString()
 	// }, {
@@ -289,7 +270,6 @@ router.post('/distribute', function(req, res) {
 	}
 });
 
-
 router.get("/albums", function(req, res) {
 	albumDao.findAll(function(err, albums) {
 		if (err) throw err;
@@ -302,6 +282,13 @@ router.get("/album", function(req, res) {
 	res.render('album', {
 		title: 'Welcome, Tian',
 		id: req.query.tag
+	});
+});
+
+router.get("/tags", function(req, res) {
+	albumDao.findTop(function(err, tags) {
+		if (err) throw err;
+		res.json(tags);
 	});
 });
 

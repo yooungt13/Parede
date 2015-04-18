@@ -7,7 +7,7 @@ block content
         img.user_head(src='./img/t.jpg', alt='pic')
         .user_info
           .user_title Tian
-          .user_dscrip 牛逼的相册不解释
+          .user_dscrip 有田十三的相册
       ul.class_list
         li.item.first
           a.curr.cb(href='./home') Content
@@ -46,7 +46,7 @@ block content
             span {{ album._id }}
             span.fg9 ({{ album.photos.length }})
           .dscrip
-            .left.fg9 Created in {{ album.time.substring(0,10) }}
+            .left.fg9 Updated in {{ album.time.substring(0,10) }}
             span.right
   link(rel='stylesheet' href='../js/plugins/fancybox/jquery.fancybox.css')
   script(src='../js/basics/jQuery.min.js')

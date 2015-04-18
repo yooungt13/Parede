@@ -30,10 +30,27 @@ AlbumlDAO.prototype = {
 			callback(err, obj);
 		});
 	},
-	findAll: function(callback){
-		Album.find({}, function(err, docs){
-			callback(err, docs);
-		});
+	findAll: function(callback) {
+		Album.find({}, null, {
+				sort: {
+					time: -1
+				}
+			},
+			function(err, docs) {
+				callback(err, docs);
+			});
+	},
+	findTop: function(callback) {
+		Album.find({}, '_id', 
+			{
+				sort: {
+					photos: -1
+				},
+				limit: 5
+			},
+			function(err, docs) {
+				callback(err, docs);
+			});
 	},
 	update: function(obj, callback) {
 		Album.update({
