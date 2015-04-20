@@ -217,9 +217,10 @@ function loadExists() {
 	$.get('tags')
 		.success(function(data) {
 			g_exists = data;
+			console.log('GET tags success.');
 		})
 		.error(function() {
-			console.log('GET tags failed.')
+			console.log('GET tags failed.');
 		});
 }
 
