@@ -11,7 +11,7 @@ app.controller("AlbumController", function($scope, $http) {
 			console.log("Albums get failed.");
 		});
 
-	// 给input[type='file']绑定事件
+	// Retrival Listener, 给input[type='file']绑定事件
 	$('#image').bind('change', function(){
 
 		if (this.files) {
@@ -24,19 +24,24 @@ app.controller("AlbumController", function($scope, $http) {
 					$('#albums').remove();
 				}
 
-				var html = '<div id="albums">'
+				var html = '<div id="albums" class="albums">'
 					+ '<div class="col">'
 					+ '<div class="preview-wrapper">'
 					+ '<img id="preview">'
-					+ '</div>'
 					+ '<a class="preview-button" id="imgSubmit">Go Retrival</a>'
-					+ '</div></div>';		
+					+ '</div></div></div>';		
 				$('article').append(html);
 				$('#imgSubmit').bind();
 
 		      	var reader = new FileReader();
 		      	reader.onload = function (e) {
 		        	$('#preview').attr("src", e.target.result);
+
+		        	// 加载js进行哈希运算
+		        	createScript('./js/plugins/phash/dip.js');
+		        	var img = $('#preview').get(0);
+		        	var hashValue = aHash(RGBA2Gray(imread(img)));
+		        	console.log(hashValue);
 		      	}
 		      	reader.readAsDataURL(this.files[0]);
 		    }

@@ -330,8 +330,8 @@ ul.class_list .arrow {
 	z-index: 1px;
 }
 
-#preview {
-	max-width: 400px;
+#ipreview {
+	min-width: 400px;
 	max-width: 400px;
 }
 
@@ -483,7 +483,7 @@ ul.class_list .arrow {
 	height: 28px;
 	line-height: 28px;
 	padding: 0 9px;
-	margin: 10px 0;
+	margin: 40px 0;
 	background: #c44;
 	border: 1px solid #c44;
 	color: #fff;
