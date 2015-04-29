@@ -257,7 +257,6 @@ function bindClicker() {
 			g_labels.push($this.find('.label').text());
 			console.log(g_labels);
 		}
-
 	});
 }
 
