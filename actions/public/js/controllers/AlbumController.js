@@ -212,5 +212,4 @@ app.controller("AlbumController", function($scope, $http) {
 	function createScript(src) {
 		$("<script></script>").attr("src", src).appendTo("body");
 	}
-
 });
