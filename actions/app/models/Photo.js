@@ -8,6 +8,7 @@ var PhotoSchema = new Schema({
 	oUrl: String,
 	tags: [],
 	descrip: String,
+	hash : String,
 	date: Date
 });
 
@@ -52,8 +53,8 @@ PhotoDAO.prototype = {
 			callback(err, obj);
 		});
 	},
-	findByImg: function(id, callback) {
-		Photo.findOne({
+	findByHash: function(hash, callback) {
+		Photo.find({
 			seq: id
 		}, function(err, obj) {
 			callback(err, obj);

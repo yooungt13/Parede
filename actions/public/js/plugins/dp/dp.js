@@ -10,6 +10,8 @@ var g_demoPhotoUrls = [
 var g_labels = [],
 	g_exists = [];
 
+var g_hash = '';
+
 function onNetworkProgress(percentComplete) {
 	var progressBar = document.getElementById('network-progress-bar');
 	progressBar.value = percentComplete;
@@ -29,13 +31,13 @@ function onNetworkLoad() {
 function makeUpload() {
 	// 上传图片 与 标签
 	if ($("#photo").val() == "") {
-		alert("上传文件不能为空!");
+		alert("No files!");
 		return false;
 	}
 	var txtImg_url = $("#photo").val().toLowerCase();
 	var txtImg_ext = txtImg_url.substring(txtImg_url.length - 3, txtImg_url.length);
 	if (txtImg_ext != "png" && txtImg_ext != "jpg" && txtImg_ext != "jpeg") {
-		alert("仅支持jpg,png,jpeg!");
+		alert("Only support jpg,png,jpeg!");
 		$("#photo").select();
 		$("#photo").focus();
 		return false;
@@ -43,7 +45,7 @@ function makeUpload() {
 	var imagefile = $("#photo").get(0).files[0];
 	var size = imagefile.size / (1024.0 * 1024.0);
 	if (size > 2) {
-		alert("图片大小不超过2M!");
+		alert("Size > 2mb!");
 		return false;
 	}
 
@@ -51,7 +53,8 @@ function makeUpload() {
 	$.ajaxFileUpload({
 		url: 'http://localhost:3000/upload',
 		data: {
-			tags: g_labels
+			tags: g_labels,
+			hash: g_hash
 		},
 		secureuri: false,
 		fileElementId: 'photo', //文件选择框的id属性
@@ -59,7 +62,7 @@ function makeUpload() {
 		success: function(data) {
 			if (!!data && data.ret == 1) {
 				alert('Upload success.');
-				window.href = "./home";
+				window.location.href = "./home";
 			} else {
 				alert('Upload failed:' + data.ret);
 			}
@@ -196,6 +199,9 @@ var g_isReady = false;
 var g_currentImage;
 
 function onFilePick(file) {
+
+	g_hash = '';
+
 	var imageType = /image.*/;
 	if (!file.type.match(imageType)) {
 		return;
@@ -205,6 +211,9 @@ function onFilePick(file) {
 		var image = new Image();
 		image.src = reader.result;
 		g_wantDemo = false;
+
+		g_hash = aHash(RGBA2Gray(imread(image)));
+		console.log(g_hash);
 		// Delay is needed for Firefox for some reason.
 		_.delay(function() {
 			classifyImage(image, image.width, image.height);
@@ -299,7 +308,7 @@ var g_webGLEnabled = true;
 $(_.delay(function() {
 	loadExists();
 
-	$('.file-wrapper input[type=file]').bind('change focus click', fileInputs);
+	$('.file-wrapper input[type=file]').bind('change', fileInputs);
 	$('#upload').on('click', function(event) {
 		makeUpload();
 	});

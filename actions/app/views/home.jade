@@ -33,15 +33,11 @@ block content
           li.item
             a.menu.button(href='./generate') Generate Data
           li.item
-            //form(method='post', action='/upload', enctype='multipart/form-data')
-            // input#myId(type='hidden', name='imageurl')
-            // input#filePath(type='file', name='filePath')
-            // input#fileLoad(type='button', value='Upload', name='fileLoad', ng-click='fileUpload()')
       .albums#albums
         .album(ng-repeat="album in albums")
           .album_cover
             a(href='album?tag={{ album._id }}')
-              img(src='{{ album.cover }}', alt='album_cover')
+              .cover(style='background-image: url({{ album.cover }})', alt='album_cover')
           .title
             span {{ album._id }}
             span.fg9 ({{ album.photos.length }})

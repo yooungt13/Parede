@@ -308,7 +308,7 @@ ul.class_list .arrow {
 }
 
 #tagSearch-wrapper {
-	margin-left: 40px;
+	margin-left: 12px;
 }
 
 #image {
@@ -386,10 +386,13 @@ ul.class_list .arrow {
 	cursor: pointer;
 }
 
-.album .album_cover img{
+.album .album_cover .cover {
 	width: 160px;
 	height: 160px;
 	margin-bottom: 13px;
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
 }
 
 .album .title, .album .dscrip {
@@ -475,7 +478,7 @@ ul.class_list .arrow {
 .preview-wrapper {
 	width: 430px;
 	border: 1px solid #ccc;
-	padding: 15px 0;
+	padding: 10px 0;
 }
 
 .preview-button {

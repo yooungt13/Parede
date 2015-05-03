@@ -38,7 +38,8 @@ router.post('/upload', multipart(), function(req, res) {
 		size = req.files.photo.size;
 
 	var tagStr = req.body.tags,
-		tags = !!tagStr ? tagStr.split(',') : ['default'];
+		tags = !!tagStr ? tagStr.split(',') : ['default'],
+		hash = req.body.hash;
 
 	if (size > 2 * 1024 * 1024) {
 		fs.unlink(path, function() { //fs.unlink 删除用户上传的文件
@@ -92,6 +93,7 @@ router.post('/upload', multipart(), function(req, res) {
 										oUrl: '../data/origin/' + fileName,
 										tags: tags,
 										descrip: descrip.data[~~(Math.random() * descrip.data.length)],
+										hash: hash,
 										date: new Date().toLocaleString()
 									};
 
@@ -319,6 +321,43 @@ router.get("/tagsearch", function(req, res) {
 		if (err) throw err;
 		res.json(photos);
 	});
+});
+
+router.get("/imgsearch", function(req, res) {
+	
+	photoDao.findAll(function(err, photos) {
+		if (err) throw err;
+
+		var ret = [];
+		for (var i = 0, len = photos.length; i < len; i++) {
+			var dis = 64;
+
+			if( !!photos[i].hash ){
+				dis = getDis(photos[i].hash, req.query.hash);
+			}
+
+			// 阈值设定，如果距离小于15，则被认为相近
+			if (dis <= 15) {
+				photos[i].dis = dis;
+				ret.push(photos[i]);
+			}
+		}
+
+		// 按距离排序
+		ret.sort(function(p1, p2){
+			return p1.dis > p2.dis ? 1 : -1;
+		});
+
+		res.json(ret);
+	});
+
+	function getDis(h1, h2) {
+		var dis = 0;
+		for (var i = 0; i < 64; i++) {
+			if (h1[i] != h2[i]) dis++;
+		}
+		return dis;
+	}
 });
 
 router.get("/classify", function(req, res) {
