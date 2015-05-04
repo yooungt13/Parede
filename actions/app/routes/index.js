@@ -4,7 +4,8 @@ var express = require('express'),
 var fs = require('fs'),
 	gm = require('gm'),
 	path = require('path'),
-	multipart = require('connect-multiparty');
+	multipart = require('connect-multiparty'),
+	w2v = require('word2vec');
 
 var albumDao = require('../models/Album.js'),
 	photoDao = require('../models/Photo.js'),
@@ -312,19 +313,27 @@ router.get("/photos", function(req, res) {
 			res.json(photos);
 		});
 	}
-
 });
 
 router.get("/tagsearch", function(req, res) {
 	console.log(req.query.tag);
-	photoDao.findByTag(req.query.tag, function(err, photos) {
+
+	var tag = req.query.tag;
+	photoDao.findByTag(tag, function(err, photos) {
 		if (err) throw err;
-		res.json(photos);
+
+		if (!!photos.length) {
+			res.json(photos);
+		} else {
+			w2v.loadModel("./public/data/word2vec/vectors.txt", function(err, model) {
+				res.json(model.getNearestWords(model.getVector(tag)));
+			});	
+		}
 	});
 });
 
 router.get("/imgsearch", function(req, res) {
-	
+
 	photoDao.findAll(function(err, photos) {
 		if (err) throw err;
 
@@ -332,7 +341,7 @@ router.get("/imgsearch", function(req, res) {
 		for (var i = 0, len = photos.length; i < len; i++) {
 			var dis = 64;
 
-			if( !!photos[i].hash ){
+			if (!!photos[i].hash) {
 				dis = getDis(photos[i].hash, req.query.hash);
 			}
 
@@ -344,7 +353,7 @@ router.get("/imgsearch", function(req, res) {
 		}
 
 		// 按距离排序
-		ret.sort(function(p1, p2){
+		ret.sort(function(p1, p2) {
 			return p1.dis > p2.dis ? 1 : -1;
 		});
 
@@ -363,6 +372,13 @@ router.get("/imgsearch", function(req, res) {
 router.get("/classify", function(req, res) {
 	res.render('classify', {
 		title: 'Welcome to Parede.'
+	});
+});
+
+router.get("/word2vec", function(req, res) {
+	var model = w2v.loadModel("./public/data/word2vec/vectors.txt", function(err, model) {
+		console.log(model);
+		console.log(model.getNearestWords(model.getVector('man'), 10));
 	});
 });
 
