@@ -9,6 +9,7 @@ var g_demoPhotoUrls = [
 ];
 var g_labels = [],
 	g_exists = [];
+var g_add = false;
 
 var g_hash = '';
 
@@ -32,7 +33,7 @@ function makeUpload() {
 	// 上传图片 与 标签
 	if ($("#photo").val() == "") {
 		alert("No files!");
-		return false;
+		return;
 	}
 	var txtImg_url = $("#photo").val().toLowerCase();
 	var txtImg_ext = txtImg_url.substring(txtImg_url.length - 3, txtImg_url.length);
@@ -40,13 +41,21 @@ function makeUpload() {
 		alert("Only support jpg,png,jpeg!");
 		$("#photo").select();
 		$("#photo").focus();
-		return false;
+		return;
 	}
 	var imagefile = $("#photo").get(0).files[0];
 	var size = imagefile.size / (1024.0 * 1024.0);
 	if (size > 2) {
 		alert("Size > 2mb!");
-		return false;
+		return;
+	}
+
+	if (!!$('textarea').val() && !g_add) {
+		var newLabels = $('textarea').val().trim().split(' ');
+		g_labels = g_labels.concat(newLabels);
+
+		g_add = true;
+		console.log(g_labels);
 	}
 
 	// 利用ajaxFileUpload上传图片
@@ -71,7 +80,7 @@ function makeUpload() {
 			alert('Upload failed: ' + e);
 		}
 	});
-	return false;
+	return;
 }
 
 function startClassification() {
@@ -186,6 +195,7 @@ function fileInputs() {
 		$fakeFile = $this.siblings('.file-holder');
 
 	g_labels = [];
+	g_add = false;
 
 	if (newVal !== '') {
 		$button.text('Photo Chosen');

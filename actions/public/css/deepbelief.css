@@ -218,6 +218,10 @@ body#spotter {
   cursor: pointer;
 }
 
+.result-entry td{
+  border-radius: 2px;
+}
+
 .result-entry .score {
   padding: 2px 0 2px 5px;
   width: 30px;
@@ -236,6 +240,7 @@ body#spotter {
 .result-choosed {
   background-color: #438075;
   color: #fff;
+  border-radius: 4px;
 }
 
 .time {

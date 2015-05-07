@@ -24,7 +24,7 @@ app.controller("AlbumController", function($scope, $http) {
 					$('#albums').remove();
 				}
 
-				var html = '<div id="albums" class="albums">' + '<div class="col">' + '<div class="preview-wrapper">' + '<img id="preview" style="display:none;">' + '<img id="preview-show" width="410">' + '<a class="preview-button" id="imgSubmit">Go Retrival</a>' + '</div></div></div>';
+				var html = '<div id="albums" class="albums">' + '<div class="col" id="col1">' + '<div class="preview-wrapper">' + '<img id="preview" style="display:none;">' + '<img id="preview-show" width="400">' + '<a class="preview-button" id="imgSubmit">Go Retrival</a>' + '</div></div></div>';
 				$('article').append(html);
 
 				var reader = new FileReader();
@@ -43,7 +43,7 @@ app.controller("AlbumController", function($scope, $http) {
 							.get("imgsearch?hash=" + hashValue)
 							.success(function(data, status, headers, config) {
 								// 设置图像列表
-								setPhotos(data);
+								setRetrivalPhotos(data);
 							})
 							.error(function(data, status, headers, config) {
 								console.log("Search by thumb failed.");
@@ -126,12 +126,223 @@ app.controller("AlbumController", function($scope, $http) {
 				}
 			});
 		} else {
-			var emptyHtml = '<div id="albums" class="albums">' + '<p class="tips">I\'m sorry,&nbsp;&nbsp;there\'s no results here.</p>' + '<p class="tips" style="font-size: 12px;">' + 'Do you want to search' + '<strong>women</strong>,' + '<strong>lady</strong>' + '</p>' + '</div>';
+			var emptyHtml = '<div id="albums" class="albums">' + '<p class="tips">I\'m sorry,&nbsp;&nbsp;there\'s no results here. Do you wanna to search...</p>' + '<div class="recommand-labels">' + '<div class="recommand">' + '</div>' + '<div class="exists">' + '</div>' + '</div>' + '</div>';
 			$('article').append(emptyHtml);
+
+			var recommand = $('.recommand'),
+				exists = $('.exists');
+
+			var colors = ['#337ab7', '#5cb85c', '#f0ad4e', '#d9534f', '#31b0d5', '#2b2b2b', '#c23321', '#2d4373'],
+				heights = [15, 20, 25, 30, 35, 40];
+
+			$http.get('/albums')
+				.success(function(data, status, headers, config) {
+					for (var i = 0, len = data.length; i < len; i++) {
+						var span = $('<span>');
+						span.css('background', colors[~~(Math.random() * colors.length)]);
+						span.html(data[i]['_id']);
+						span.css('position', 'absolute');
+
+						var fontSize = heights[~~(Math.random() * 5)];
+						span.css('left', ~~(Math.random() * 300) + 50);
+						span.css('top', ~~(Math.random() * 250) + 50);
+
+
+						span.css('font-size', fontSize);
+						span.css('padding', '5px 10px');
+						span.css('-webkit-transform', 'rotate(' + (~~(Math.random() * 30) - 15) + 'deg)');
+						span.css('border-radius', '5px');
+						span.css('color', '#fff');
+
+						recommand.append(span);
+					}
+
+					$http.get('/word2vec?tag=' + $('#tagSearch').val())
+						.success(function(data, status, headers, config) {
+							if (data.length != 0) {
+								for (var i = 0, len = data.length; i < len; i++) {
+									var span = $('<span>');
+									span.css('background', colors[~~(Math.random() * colors.length)]);
+									span.html(data[i]['word']);
+									span.css('position', 'absolute');
+
+									var fontSize = heights[~~(Math.random() * 5)];
+									span.css('left', ~~(Math.random() * 300) + 50);
+									span.css('top', ~~(Math.random() * 250) + 50);
+
+
+									span.css('font-size', fontSize);
+									span.css('padding', '5px 10px');
+									span.css('-webkit-transform', 'rotate(' + (~~(Math.random() * 30) - 15) + 'deg)');
+									span.css('border-radius', '5px');
+									span.css('color', '#fff');
+
+									exists.append(span);
+								}
+							} else {
+								for (var i = 0; i < 10; i++) {
+									var span = $('<span>');
+									span.css('background', colors[~~(Math.random() * colors.length)]);
+									span.html(['sorry', 'i don\'t know', 'forgive me'][~~(Math.random() * 3)]);
+									span.css('position', 'absolute');
+
+									var fontSize = heights[~~(Math.random() * 5)];
+									span.css('left', ~~(Math.random() * 300) + 50);
+									span.css('top', ~~(Math.random() * 250) + 50);
+
+
+									span.css('font-size', fontSize);
+									span.css('padding', '5px 10px');
+									span.css('-webkit-transform', 'rotate(' + (~~(Math.random() * 30) - 15) + 'deg)');
+									span.css('border-radius', '5px');
+									span.css('color', '#fff');
+
+									exists.append(span);
+								}
+							}
+						})
+						.error(function(data, status, headers, config) {
+							console.log("GET recommand failed.");
+						});
+				})
+				.error(function(data, status, headers, config) {
+					alert("GET albums failed.");
+				});
+
 		}
 
 		function loadImg() {
 			for (var i = 1; i <= 5; i++) {
+				if (picno < len) {
+					var html = '',
+						photo = data[picno];
+
+					html = '<div class="wrap fancybox" data-fancybox-group="gallery"' + ' href="' + photo.oUrl + '"' + ' title="' + photo.tags.join() + '">' + ' <img src="' + photo.tUrl + '" class="thumb" alt=""><div class="pic_info">' + '<p class="fb14">' + photo.tags.join() + '</p>' + '<p class="fg9">' + (photo.descrip || 'Even there\'s no descrip, we still have our world.') + '</p>' + '<p class="bottom_info fg9">' + photo.date.substring(0, 16) + ' - Sysu, Guangzhou</p>' + '</div></div>';
+
+					$('#col' + i).append(html);
+					picno++;
+				}
+			}
+		}
+	}
+
+	function setRetrivalPhotos(data) {
+
+		var retrivalHtml = '';
+
+		// 置空容器
+		if (!!$('#albums')) {
+			retrivalHtml = $('#albums').html();
+			$('#albums').remove();
+		}
+
+		if (!!data.length) {
+			var emptyHtml = '<div id="albums" class="albums">' + retrivalHtml + '<div class="col" id="col2"></div>' + '<div class="col" id="col3"></div>' + '<div class="col" id="col4"></div>' + '<div class="col" id="col5"></div>' + '</div>';
+			$('article').append(emptyHtml);
+
+			// 初始化照片
+			var winHeight = $(window).height(),
+				len = data.length;
+			picno = 0;
+
+			loadImg();
+			loadImg();
+			loadImg();
+
+			$(window).unbind().bind('scroll', function() {
+				var docTop = $(document).scrollTop(),
+					contentHeight = $('#albums').height();
+				if (docTop + winHeight >= contentHeight) {
+					loadImg();
+				}
+			});
+		} else {
+			var emptyHtml = '<div id="albums" class="albums">' + '<p class="tips">I\'m sorry,&nbsp;&nbsp;there\'s no results here. Do you wanna to search...</p>' + '<div class="recommand-labels">' + '<div class="recommand">' + '</div>' + '<div class="exists">' + '</div>' + '</div>' + '</div>';
+			$('article').append(emptyHtml);
+
+			var recommand = $('.recommand'),
+				exists = $('.exists');
+
+			var colors = ['#337ab7', '#5cb85c', '#f0ad4e', '#d9534f', '#31b0d5', '#2b2b2b', '#c23321', '#2d4373'],
+				heights = [15, 20, 25, 30, 35, 40];
+
+			$http.get('/albums')
+				.success(function(data, status, headers, config) {
+					for (var i = 0, len = data.length; i < len; i++) {
+						var span = $('<span>');
+						span.css('background', colors[~~(Math.random() * colors.length)]);
+						span.html(data[i]['_id']);
+						span.css('position', 'absolute');
+
+						var fontSize = heights[~~(Math.random() * 5)];
+						span.css('left', ~~(Math.random() * 300) + 50);
+						span.css('top', ~~(Math.random() * 250) + 50);
+
+
+						span.css('font-size', fontSize);
+						span.css('padding', '5px 10px');
+						span.css('-webkit-transform', 'rotate(' + (~~(Math.random() * 30) - 15) + 'deg)');
+						span.css('border-radius', '5px');
+						span.css('color', '#fff');
+
+						recommand.append(span);
+					}
+
+					$http.get('/word2vec?tag=' + $('#tagSearch').val())
+						.success(function(data, status, headers, config) {
+							if (data.length != 0) {
+								for (var i = 0, len = data.length; i < len; i++) {
+									var span = $('<span>');
+									span.css('background', colors[~~(Math.random() * colors.length)]);
+									span.html(data[i]['word']);
+									span.css('position', 'absolute');
+
+									var fontSize = heights[~~(Math.random() * 5)];
+									span.css('left', ~~(Math.random() * 300) + 50);
+									span.css('top', ~~(Math.random() * 250) + 50);
+
+
+									span.css('font-size', fontSize);
+									span.css('padding', '5px 10px');
+									span.css('-webkit-transform', 'rotate(' + (~~(Math.random() * 30) - 15) + 'deg)');
+									span.css('border-radius', '5px');
+									span.css('color', '#fff');
+
+									exists.append(span);
+								}
+							} else {
+								for (var i = 0; i < 10; i++) {
+									var span = $('<span>');
+									span.css('background', colors[~~(Math.random() * colors.length)]);
+									span.html(['sorry', 'i don\'t know', 'forgive me'][~~(Math.random() * 3)]);
+									span.css('position', 'absolute');
+
+									var fontSize = heights[~~(Math.random() * 5)];
+									span.css('left', ~~(Math.random() * 300) + 50);
+									span.css('top', ~~(Math.random() * 250) + 50);
+
+
+									span.css('font-size', fontSize);
+									span.css('padding', '5px 10px');
+									span.css('-webkit-transform', 'rotate(' + (~~(Math.random() * 30) - 15) + 'deg)');
+									span.css('border-radius', '5px');
+									span.css('color', '#fff');
+
+									exists.append(span);
+								}
+							}
+						})
+						.error(function(data, status, headers, config) {
+							console.log("GET recommand failed.");
+						});
+				})
+				.error(function(data, status, headers, config) {
+					alert("GET albums failed.");
+				});
+		}
+
+		function loadImg() {
+			for (var i = 3; i <= 5; i++) {
 				if (picno < len) {
 					var html = '',
 						photo = data[picno];

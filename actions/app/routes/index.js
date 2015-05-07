@@ -377,8 +377,13 @@ router.get("/classify", function(req, res) {
 
 router.get("/word2vec", function(req, res) {
 	var model = w2v.loadModel("./public/data/word2vec/vectors.txt", function(err, model) {
-		console.log(model);
-		console.log(model.getNearestWords(model.getVector('man'), 10));
+		try{
+			var ret = model.getNearestWords(model.getVector(req.query.tag), 10);
+			res.json(ret);
+		}catch(e){
+			res.json([]);
+		}
+		
 	});
 });
 
